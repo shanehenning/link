@@ -1,14 +1,16 @@
+# encoding=utf8
+
 from openpyxl import load_workbook
 import json
+import re
 
-file = load_workbook(filename='advisory-activities-v4-voice-updates-LWP.xlsx')
+import sys
+reload(sys)
+sys.setdefaultencoding('utf8')
+
+file = load_workbook(filename='advisory-activities-v5-voice-updates-LWP.xlsx')
 sheets = file.sheetnames
 
-md = {
-'Class Challenge': ['objective', 'materials', 'themes', 'prep', 'activityInstructions', 'introduction', 'steps', 'reflection', 'additionalSection', 'description'],
-'Class Meeting': ['objective', 'themes', 'preparation', 'instructions', 'warm-up', 'discussion', 'reflection', 'description'],
-'Service Learning':['objective', 'materials', 'themes', 'preparation', 'projectDescription', 'instructionsHeader', 'investigation', 'planning', 'action', 'reflection', 'demonstration', 'description']
-}
 allData = []
 data = {}
 
@@ -23,7 +25,7 @@ for sheet in sheets:
         if sheet == 'Service Learning':
             data = {}
 
-            # to limit the amount of activities processed
+            to limit the amount of activities processed
             if line_count > 3:
                 break
 
@@ -32,6 +34,7 @@ for sheet in sheets:
                     if line_count == 0:
                         headers.append(camelCase(cell.value))
                     else:
+                        cell.value = cell.value.replace('!&-&!', '–').replace('!%-%!', '—')
                         data[headers[cellIndex]] = {}
                         data[headers[cellIndex]]['en-US'] = cell.value
             if line_count > 0:

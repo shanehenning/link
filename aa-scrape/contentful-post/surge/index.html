@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Advisory Activity Previewer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  </head>
+  <body>
+
+    <style>
+      body{
+        padding: 15px 60px;
+      }
+      h1,h2,h3,h4,h5,h6{
+        font-weight: bold;
+      }
+      h2{
+        font-size: calc(2.188 * 16px);
+        line-height: calc(3.25 * 16px);
+        margin: 0;
+      }
+      h3{
+        font-size: calc(1.75 * 16px);
+        line-height: calc(2 * 16px);
+      }
+      h5{
+        font-size: calc(1.3125 * 16px);
+        line-height: calc(1.5625 * 16px);
+      }
+      h6{
+        font-size: calc(1.125 * 16px);
+        line-height: calc(1.375 * 16px);
+      }
+      p, li{
+        font-size: calc(1.188 * 16px);
+        line-height: calc(1.875 * 16px);
+      }
+
+      .advisory-activity-wrapper{
+        margin-top: 40px;
+      }
+      hr{
+        border-width: 0px;
+        border-top: 2px solid black;
+      }
+      .section-heading{
+        text-transform: uppercase;
+      }
+      .overview-wrapper{
+        margin-right: 0;
+      }
+      .sidebar-content{
+        background-color: #f1f1f1;
+      }
+      .clearfix-block{
+        clear: both;
+      }
+      .markdown{
+        margin-bottom: 30px;
+      }
+    </style>
+
+    <p>Change the lesson?
+    <select class="" name="Select Activity">
+      <option value="Select An Activity">Select An Activity</option>
+    </select>
+    </p>
+
+
+    <div class="advisory-activity-wrapper">
+      <h6 class="section-heading activityType"></h6>
+        <hr>
+        <h2 class="activityTitle"></h2>
+        <div class="overview-wrapper row">
+          <div class="overview-content col-sm-7">
+            <h5 class="header-time">Time: <span class="time"></span></h5>
+            <h5 class="header-objective">Objective</h5>
+            <div class="objective markdown"></div>
+            <h5 class="header-materials">Materials</h5>
+            <div class="materials markdown"></div>
+            <h5 class="header-prep">Prep</h5>
+            <div class="preparation markdown"></div>
+          </div>
+          <div class="sidebar-content col-sm-5">
+            <h6 class="header-themes">Themes</h6>
+            <div class="themes markdown"></div>
+            <h6 class="header-casel">CASEL Alignment</h6>
+            <div class="casel markdown"></div>
+          </div>
+          <div class="generic-container clearfix-block col-sm-12">
+            <div class="projectDescription markdown"></div>
+          </div>
+        </div>
+        <div class="activity-wrapper clearfix-block">
+          <h6 class="section-heading instructionsHeader">Activity Instructions</h6>
+          <hr>
+          <h5 class="header-investigation">Investigation</h5>
+          <div class="investigation markdown"></div>
+          <h5 class="header-planning">Planning</h5>
+          <div class="planning markdown"></div>
+          <h5 class="header-action">Action</h5>
+          <div class="action markdown"></div>
+          <h5 class="header-reflection">Reflection</h5>
+          <div class="reflection markdown"></div>
+          <h5 class="header-demonstration">Demonstration</h5>
+          <div class="demonstration markdown"></div>
+        </div>
+    </div>
+
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/showdown/1.9.0/showdown.js"></script>
+    <!-- <script src='contentful-request.js'></script> -->
+    <!-- <script src='change-activity.js'></script> -->
+    <script>
+      $(document).ready(function(){
+        var space = 'wjuty07n9kzp';
+        var environment = 'Feature';
+        var token = 'de842675273a862fc0578632df2c95cf97ea6590de1820075c0abf2853e5ac22';
+        var type = 'advisoryActivityServiceLearning';
+        activities = [];
+        var $select = $('select');
+        var converter = new showdown.Converter();
+
+        function updateActivity(){
+          // console.log('select val: ', $select.val());
+          var selected = activities.findIndex(item => item['activityTitle'] === $select.val());
+          for (prop in activities[selected]){
+              var $el = $('.' + prop);
+              var val;
+              if($el.hasClass('markdown')){
+                val = converter.makeHtml(activities[selected][prop]);
+                // console.log('val: ', val);
+              } else {
+                val = activities[selected][prop]
+              }
+              $el.html(val);
+          }
+        }
+
+        function composeRequest(space_id, environment_id, access_token, content_type){
+          return `https://cdn.contentful.com/spaces/${space_id}/environments/${environment_id}/entries?access_token=${access_token}&content_type=${content_type}&select=fields`
+        }
+
+        var url = composeRequest(space, environment, token, type);
+
+        $.get(url, function(data){
+          data.items.forEach((item, idx) =>{
+            activities.push(item['fields'])
+            $select.append('<option value="' + item['fields']['activityTitle'] + '">' + item['fields']['activityTitle'] + '</option>')
+          })
+          // console.log('activities: ', activities);
+        });
+
+        $select.on('change', updateActivity);
+      });
+    </script>
+  </body>
+</html>

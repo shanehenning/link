@@ -32,7 +32,7 @@ for sheet in sheets:
                     headers.append('#### ' + cell.value)
                 else:
                     data += headers[cellIndex] + '\n'
-                    cell.value = cell.value.replace('!&-&!', '–').replace('!*-*!', '—')
+                    cell.value = cell.value.replace('!&-&!', '–').replace('!%-%!', '—')
                     data += cell.value + '\n'
             with open('md/' + mdFileName + '.md', 'w') as f:
                 f.write(data)

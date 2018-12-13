@@ -36,8 +36,10 @@ Present the activity: **Bullying and harassment can seem like very difficult iss
 2. Call on students to tell the class their ideas, as time allows.
 
 #### Unit
-U2P
+U4
 #### Grade
-G8
+G7
+#### Lesson
+L25
 #### Description
-Identify and adopt a local or global cause and create a plan to help
+Explore different ways to support people affected by bullying or harassment

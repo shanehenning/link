@@ -11,4 +11,4 @@ for val in data:
     'content_type_id': 'advisoryActivityServiceLearning',
     'fields': val
     })
-    # entry.publish()
+    entry.publish()

@@ -61,7 +61,7 @@ def getMarkdown(entry, attr, selector, *args, **kwargs):
 # end soup extraction functions
 
 def convertText(text):
-    return text.replace(u"\u2018", "'").replace(u"\u2019", "'").replace(u'\u201C', '"').replace(u'\u201D', '"').replace(u'\u2013', '!&-&!').replace(u'\u2014', '!*-*!').strip()
+    return text.replace(u"\u2018", "'").replace(u"\u2019", "'").replace(u'\u201C', '"').replace(u'\u201D', '"').replace(u'\u2013', '!&-&!').replace(u'\u2014', '!%-%!').strip()
 
 # scrape function
 for row in indexFile.iter_rows(min_row=1):
