@@ -3,83 +3,108 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from bs4 import BeautifulSoup
-import time
+import collections, json, re, time
 
 driver = webdriver.Firefox()
 
-URL = 'http://www.secondstep.org/Streaming-Media/Second-Step/grade-4/Lesson-2'
+URL = 'http://www.secondstep.org/Streaming-Media/Second-Step/Kindergarten/Lesson-'
+LOGIN_URL = 'http://login.secondstep.org/account/login'
 USERNAME = 'mfahmy@cfchildren.org'
 PASSWORD = 'forthechildren'
 
-soups = {}
+pages = collections.OrderedDict()
+
 
 def site_login():
-    driver.get(URL)
+    driver.get(LOGIN_URL)
     driver.find_element_by_id('Email').send_keys(USERNAME)
     driver.find_element_by_id('Password').send_keys(PASSWORD)
     driver.find_element_by_class_name('login-bt').click()
 
-def get_soups():
-    page = driver.current_url
-    href = page.split('/')
-    name = (href[len(href) - 2] + '-' + href[len(href) - 1]).lower()
+def scrape_content():
+
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     contentPane = soup.find('div', attrs={'id': 'dnn_ContentPane'})
     lesson_materials_all = contentPane.find_all('div', attrs={'class': 'lesson-materials'})
-    all_buttons = driver.find_elements_by_xpath('//div[@class="button-container width-auto"]/a')
+    all_buttons = driver.find_elements_by_xpath('//div[contains(@class, "button-container")]/a')
     buttons_modals = ['a'] * len(all_buttons)
     for all_buttons_idx, button in enumerate(all_buttons):
         button.click()
-        print('all_buttons_idx: ', all_buttons_idx)
-        media = ''
-        try:
-            img = WebDriverWait(driver, 0.75).until(
-                EC.presence_of_element_located((By.XPATH, '//img[@class="fancybox-image"]'))
+        try: # look for image
+            img = WebDriverWait(driver, .75).until(
+                EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//img[@class="fancybox-image"]'))
             )
-            # print('img: ', img)
             media = 'https://www.secondstep.org' + img.get_attribute('src')
-            print('media: ', media)
-        except:
-            element = WebDriverWait(driver,10).until(
-                EC.presence_of_element_located((By.XPATH, '//div[@class="vjs-poster"]'))
+        except: # look instead for video
+            element = WebDriverWait(driver,5).until(
+                EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//div[@class="vjs-poster"]'))
             )
-            # print('element: ', element)
-            media = element.get_attribute('style').split('media/')[1].split('/')[0]
-            print('media: ', media)
+            if len(element.get_attribute('style').split('media/')) > 1:
+                media = element.get_attribute('style').split('media/')[1].split('/')[0]
+            else:
+                media = ' '
         buttons_modals[all_buttons_idx] = media
-        close = driver.find_element_by_xpath('//div[@class="fancybox-overlay fancybox-overlay-fixed"]')
+
+        # below actions click a little bit off of the button because another element obscure and prevents a click
+        close_modal_button = driver.find_element_by_xpath('//div[@class="fancybox-overlay fancybox-overlay-fixed"]')
         action = webdriver.common.action_chains.ActionChains(driver)
-        action.move_to_element_with_offset(close, 10, 10)
+        action.move_to_element_with_offset(close_modal_button, 10, 10)
         action.click()
         action.perform()
-        time.sleep(0.75)
-    data = []
+
+        # wait for modal to close before next index
+        time.sleep(1)
+
     counter = 0
-    print('buttons_modals: ', buttons_modals)
+    data = ['a'] * len(lesson_materials_all)
     for material_idx, material in enumerate(lesson_materials_all):
         heading = material.find('p', attrs={'class': 'gray-header'}).text.strip()
-        buttons = material.find_all('div', attrs={'class': 'button-container'})
-        lesson_materials_buttons = []
+        buttons = material.find_all('a', attrs={'class': 'dm-bt'})
+        lesson_materials_buttons = ['a'] * len(buttons)
         for button_idx, button in enumerate(buttons):
-            button_title = button.find('p', attrs={'class': 'bt-small'}).text.strip()
-            button_preview = button.find('img')['src']
+            button_title = button.find('p', attrs={'class': 'bt-small'})
+            if hasattr(button_title, 'text'):
+                button_title = button_title.text.strip()
+                thumbnail_img = 'https://www.secondstep.org' + button.find('img')['src']
+            else:
+                button_title = button['title']
+                thumbnail_img = ' '
+            button_title = re.sub(' +', ' ', button_title.replace('\n', ' '))
             new_button = {
-                'index': button_idx,
-                'button-title': button_title,
-                'button-preview': button_preview,
-                'button-modal': buttons_modals[counter]
+                'item-title': button_title,
+                'thumbnail-image-src': thumbnail_img,
+                'modal-media': buttons_modals[counter]
             }
-            lesson_materials_buttons.append(new_button)
+            lesson_materials_buttons[button_idx] = new_button
+            counter += 1
         new_material = {
-            'index': material_idx,
             'heading': heading,
-            'buttons': lesson_materials_buttons
+            'items': lesson_materials_buttons
         }
-        data.append(new_material)
-        counter += 1
-    # print('data: ', data)
-    driver.quit()
+        data[material_idx] = new_material
+    pages[name] = data
+
 
 
 site_login()
-get_soups()
+# grade_count = 1
+# while grade_count < 7:
+#     if grade_count == 1:
+#         URL = URL + 'Early-Learning/Weekly-Theme-'
+#     if grade_count == 2:
+#         URL = URL + 'Kindergarten/Lesson-'
+#     if grade_count > 2:
+#         grade = 'grade-' + str(grade_count - 2)
+#         URL = URL + grade + '/Lesson-'
+page_count = 1
+while page_count < 6:
+    driver.get(URL + str(page_count))
+    # dynamically create name based upon url, for ex: grade-4-lesson-1
+    address = driver.current_url
+    href = address.split('/')
+    name = (href[len(href) - 2] + '-' + href[len(href) - 1]).lower()
+    scrape_content()
+    page_count += 1
+with open('streaming-media.json', 'w') as f:
+    f.write(json.dumps(pages))
+driver.quit()

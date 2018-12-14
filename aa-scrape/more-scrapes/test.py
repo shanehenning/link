@@ -1,11 +1,12 @@
-from bs4 import BeautifulSoup
-import requests
+from collections import OrderedDict
 
-URL = 'https://www.secondstep.org/what-is-second-step'
+mydict = {'carl':40,
+          'alan':2,
+          'bob':1,
+          'danny':3}
 
-page_response = requests.get(URL, timeout=5)
 
-page_content = BeautifulSoup(page_response.content, 'html.parser')
 
-print(page_content.find('h1'))
-print(page_content.find_all('h1'))
+from collections import OrderedDict
+OrderedDict(sorted(d.items(), key=lambda i:keyorder.index(i[0])))
+print(OrderedDict(mydict))
