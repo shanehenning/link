@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="utf-8">
+  <title></title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+</head>
+
+<body>
+
+  <style>
+    .ms.fade .modal-backdrop{
+      display: none;
+    }
+    .ms-modal-container{
+      position: relative;
+      background: #fff;
+      top: 15%;
+    }
+    .modal-header{
+      background-color: #2A82E6;
+      color: #fff;
+    }
+    .modal-header h4, .modal-header h6 .modal-header{
+      color: #fff;
+    }
+    .modal-header .close{
+      opacity: 1;
+      color: #fff;
+      text-shadow: none;
+    }
+    .modal ol{
+      padding: 0 5px;
+    }
+    .panel-heading{
+      padding-right: 0;
+    }
+    .panel-title a{
+      display: block;
+    }
+
+
+    .ms-caret{
+    display: inline-block;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    margin-top: 6px;
+    border-top: 10px dashed;
+    border-right: 9px solid transparent;
+    border-left: 9px solid transparent;
+    opacity: .6;
+    transition: opacity 250ms ease;
+  }
+
+  .ms-caret-up{
+    display: inline-block;
+    position: relative;
+    bottom: 1px;
+    width: 0;
+    height: 0;
+    margin-left: 2px;
+    margin-top: 6px;
+    border-right: 10px solid transparent;
+    border-left: 9px solid transparent;
+    border-top-width: 0;
+    border-bottom-width: 9px;
+    border-bottom-style: solid;
+    opacity: .6;
+    transition: opacity 250ms ease;
+  }
+
+  .question a:hover .ms-caret, .question a:hover .ms-caret-up{
+    opacity: .85;
+  }
+
+  .question{
+    display: block;
+    margin: 10px 0;
+    width: 100%;
+    border: 2px solid #dfdfdf;
+    border-radius: 4px;
+    padding: 5px 15px;
+  }
+
+  .question a{
+    color: #666;
+    display: block;
+  }
+
+  /* .select-container{
+    border: 2px solid #dfdfdf;
+    border-radius: 4px;
+    padding: 5px 15px;
+  } */
+  /* .select-container a {
+    color: #666;
+    display: block;
+  } */
+
+  .question a:focus{
+    text-decoration: none;
+  }
+
+  .question label{
+    display: block;
+  }
+  </style>
+
+  <h2>hello world</h2>
+  <a href="#" data-toggle="modal" data-target="#modal-implementation">modal</a>
+
+  <!-- program overview introduction modal -->
+  <div class="ms modal fade ms-modal modal-implementation" id="modal-implementation" tabindex="-1">
+    <div class="ms modal-backdrop" data-dismiss="modal"></div>
+    <div class="ms-modal-container col-sm-10 col-sm-offset-1">
+      <div class="row modal-header">
+        <a href="#" class="close pull-right" data-dismiss="modal">
+          <i class="glyphicon glyphicon-remove"></i>
+        </a>
+        <h4 class="col-sm-9">We'd like to hear from you!</h4>
+        <h6 class="col-sm-9">How do you teach Second Step at your school?</h6>
+      </div>
+      <div class="modal-body">
+        <ol>
+          <li>
+            <div class="panel">
+
+              <!-- panel header -->
+              <div class="panel-heading">
+                <h4>How is Second Step implemented at your school?</h4>
+                <!-- <p class="panel-title"> -->
+                <!-- </p> -->
+              </div>
+              <div class="row question">
+                <a data-toggle="collapse" href="#panel-implemented-how">Select all that apply <i class="ms-caret pull-right"></i></a>
+
+                <!-- panel content -->
+                <div class="panel-collapse collapse" id="panel-implemented-how" role="tabpanel">
+                      <form class="form-implemented-how" action="" method="">
+                        <label for="advisory-time">
+                          <input type="checkbox" name="advisory-time" value="Advisory time">Advisory time
+                        </label>
+                        <label for="non-advisory-time">
+                          <input type="checkbox" name="non-advisory-time" value="Non-advisory time">Non-advisory time
+                        </label>
+                        <label for="other">
+                          <input type="checkbox" name="other" value="Other">Other
+                        </label>
+                      </form>
+                </div>
+              </div>
+              <label for="other-explanation question">
+                If other, please explain: <input type="text" name="other-explanation" value="">
+              </label>
+            </div>
+
+          </li>
+        </ol>
+      </div>
+      <div class="modal-footer">
+
+      </div>
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+  <script>
+    $(document).ready(function() {
+      $('.panel').find('.collapse').on('shown.bs.collapse', function() {
+        $(this).parent().find('.ms-caret').addClass('ms-caret-up').removeClass('ms-caret')
+      }).on('hidden.bs.collapse', function() {
+        $(this).parent().find('.ms-caret-up').addClass('ms-caret').removeClass('ms-caret-up')
+      })
+    })
+  </script>
+</body>
+
+</html>

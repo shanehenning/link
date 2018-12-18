@@ -7,7 +7,7 @@ import collections, json, re, time
 
 driver = webdriver.Firefox()
 
-URL = 'http://www.secondstep.org/Streaming-Media/Second-Step/Kindergarten/Lesson-'
+URL = 'http://www.secondstep.org/Streaming-Media/Second-Step/grade-4/Lesson-'
 LOGIN_URL = 'http://login.secondstep.org/account/login'
 USERNAME = 'mfahmy@cfchildren.org'
 PASSWORD = 'forthechildren'
@@ -97,7 +97,7 @@ site_login()
 #         grade = 'grade-' + str(grade_count - 2)
 #         URL = URL + grade + '/Lesson-'
 page_count = 1
-while page_count < 6:
+while page_count < 23:
     driver.get(URL + str(page_count))
     # dynamically create name based upon url, for ex: grade-4-lesson-1
     address = driver.current_url
