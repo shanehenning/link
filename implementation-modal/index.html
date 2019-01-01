@@ -5,34 +5,48 @@
   <meta charset="utf-8">
   <title></title>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
 
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+
+    
   <style>
-    .ms.fade .modal-backdrop{
+    #modal-implementation{
+      z-index: 1100;
+    }
+    #modal-implementation .modal-backdrop{
       display: none;
     }
-    .ms-modal-container{
+    #modal-implementation .ms-modal-container{
       position: relative;
       background: #fff;
       top: 10%;
+      max-width: 700px;
+      width: 90%;
+      margin: 0 auto;
     }
-    .modal-header{
+    #modal-implementation .modal-form.hidden, #modal-implementation .modal-thank-you.hidden{
+      display:none;
+    }
+    #modal-implementation .modal-header{
       background-color: #368EE7;
     }
-    .modal-header h2, .modal-header span, .modal-header .close{
+    #modal-implementation .modal-header h2, #modal-implementation .modal-header span, #modal-implementation .modal-header .close{
       color: #fff;
     }
-    .modal-header h2{
+    #modal-implementation .modal-header h2{
       display: inline-block;
       margin-top: 5px;
     }
-    .modal-header span{
+    #modal-implementation .modal-header span{
       font-size: 24px;
       line-height: 28px;
     }
-    .modal-header .close{
+    #modal-implementation .modal-header .close{
       opacity: 1;
       color: #fff;
       text-shadow: none;
@@ -41,37 +55,37 @@
       margin-right: 9px;
       font-size: 26px;
     }
-    .modal-body{
+    #modal-implementation .modal-body{
       color: #666;
-      padding-left: 5px;
-      padding-right: 5px;
+      padding-left: 20px;
+      padding-right: 20px;
     }
-    .modal-body p{
+    #modal-implementation .modal-body p{
       /* font-size: 20px;
       line-height: 24px; */
       margin-bottom: 0;
     }
-    .modal ol{
+    #modal-implementation ol{
       padding: 0;
       font-size: 20px;
       line-height: 24px;
       margin-left: 24px;
       margin-right: -16px;
     }
-    .modal ol li{
+    #modal-implementation ol li{
       margin-top: 25px;
     }
-    .modal ol li:first-of-type{
+    #modal-implementation ol li:first-of-type{
       margin-top: 0;
     }
-    .panel-heading{
+    #modal-implementation .panel-heading{
       padding-right: 0;
     }
-    .panel-title a{
+    #modal-implementation .panel-title a{
       display: block;
     }
 
-    .question{
+    #modal-implementation .question{
       display: block;
       margin: 10px 0 15px;
       margin-left: -20px;
@@ -80,82 +94,145 @@
       border-radius: 4px;
       padding: 5px 18px;
     }
-    .question.validate{
+    #modal-implementation .question.validate{
       border-color: #F18679;
+      border-width: 1px;
+      margin-top: 5px;
+      margin-bottom: 5px;
     }
-    .validate-message, .validate-message-other{
+    #modal-implementation .validate-message, #modal-implementation .validate-message-other{
       display: block;
-      font-size: 16px;
+      font-size: 14px;
       color: #F18679;
       width: 100%;
-      padding: 5px 0 0;
+      padding: 0;
+      margin-left: 3px;
     }
-    .validate-message.hidden{
+    #modal-implementation .validate-message.hidden{
       display: none;
     }
 
-    .question a{
+    #modal-implementation .question a{
       color: #666;
       display: block;
     }
-    .question a:focus{
+    #modal-implementation .question a:focus{
       text-decoration: none;
     }
-    form{
+    #modal-implementation form{
       padding-top: 10px;
     }
 
-    form input{
+    #modal-implementation form input{
       margin-left: 10px;
     }
 
-    input[type="checkbox"]{
-      position: relative;
-      bottom: 2px;
-      transform: scale(1.25);
-      margin-left: 13px;
-      margin-right: 13px;
+    #modal-implementation input[type=checkbox]{
+      position: absolute;
+      opacity: 0.01;
+      top: 0;
+      margin: 0;
+      margin-left: -15px;
+      display: block;
+      width: 100%;
+      height: 42px;
+      cursor: pointer;
+      z-index: 2;
     }
 
-    label, .question a{
+    #modal-implementation label input[type=checkbox] + span:before{
+      font-family: FontAwesome;
+      content: '\f096';
+      display: inline-block;
+      letter-spacing: 11px;
+      font-size: 20px;
+      position: relative;
+      top: 1px;
+      z-index: 1;
+    }
+    #modal-implementation label input[type=checkbox]:checked + span:before{
+      content: '\f14a';
+      letter-spacing: 10px;
+    }
+    #modal-implementation label input[type=checkbox]:indeterminate + span:before{
+      content: '\f147';
+      letter-spacing: 11px;
+    }
+
+    #modal-implementation .dont-ask label{
+      margin: 5px 10px 5px;
+      font-size: 14px;
+      display: inline-block;
+    }
+
+    #modal-implementation .dont-ask input[type=checkbox]{
+      height: auto;
+      width: auto;
+      margin: 0;
+      display: block;
+      width: 100%;
+      height: 100%;
+    }
+    #modal-implementation .dont-ask input[type=checkbox] + span:before{
+      top: 2px;
+      font-size: 18px;
+      letter-spacing: 5px;
+    }
+
+    #modal-implementation .dont-ask input[type=checkbox]:checked + span:before{
+      top: 2px;
+      font-size: 18px;
+      letter-spacing: 4px;
+      color: #4DA8EF;
+    }
+
+    #modal-implementation .dont-ask input[type=checkbox]:indeterminate + span:before{
+      content: '\f147';
+      letter-spacing: 5px;
+    }
+
+
+    #modal-implementation label, #modal-implementation .question a{
       display: block;
       /* font-size: 18px; */
       line-height: 26px;
       font-weight: 400;
     }
-    label{
+    #modal-implementation label{
       font-size: 16px;
       margin: 0;
+      position: relative;
     }
-    label.highlighted{
+    #modal-implementation label.highlighted{
       background-color: #EBF2FC;
-      color: #568AC3;
+      color: #4DA8EF;
     }
-    .question a{
+    #modal-implementation .question a{
       font-size: 16px;
     }
-    .question label{
+    #modal-implementation .question label{
       padding: 5px 0;
+      padding-left: 15px;
       line-height: 32px;
       border-bottom: 1px solid #bcbcbc;
     }
-    .question label:last-of-type{
+    #modal-implementation .question label:last-of-type{
       border-bottom: 0;
       padding-bottom: 0;
       margin-bottom: 0;
     }
-    .sub-question{
+    #modal-implementation .sub-question{
       font-size: 16px;
       margin-left: -20px;
     }
-    .sub-question input{
+    #modal-implementation .sub-question input{
       margin-left: 0;
     }
-    .sub-question.hidden{
+    #modal-implementation .sub-question.hidden{
       display: none;
     }
 
-    .ms-caret, .ms-caret-up{
+    #modal-implementation .ms-caret, #modal-implementation .ms-caret-up{
       display: inline-block;
       margin-left: 2px;
       margin-top: 6px;
@@ -164,25 +241,25 @@
       opacity: .6;
       transition: opacity 250ms ease;
     }
-    .ms-caret{
+    #modal-implementation .ms-caret{
       border-top: 10px dashed;
     }
-    .ms-caret-up{
+    #modal-implementation .ms-caret-up{
       position: relative;
       bottom: 1px;
       border-bottom: 10px dashed;
     }
-    .question a:hover .ms-caret, .question a:hover .ms-caret-up{
+    #modal-implementation .question a:hover .ms-caret, #modal-implementation .question a:hover .ms-caret-up{
       opacity: .85;
     }
 
-    .button-container{
+    #modal-implementation .button-container{
       text-align: center;
-      margin-top: 45px;
+      margin-top: 15px;
       margin-bottom: 10px;
     }
 
-    .button-cancel, .button-submit{
+    #modal-implementation .button-cancel, #modal-implementation .button-submit, #modal-implementation .button-ok{
       padding-top: 10px;
       padding-bottom: 10px;
       border-radius: 8px;
@@ -196,138 +273,202 @@
       font-size: 18px;
       transition: 250ms ease;
     }
-    .button-cancel:hover, .button-submit:hover{
+    #modal-implementation .button-cancel:hover, #modal-implementation .button-cancel:focus, #modal-implementation .button-submit:hover, #modal-implementation .button-submit:focus, #modal-implementation .button-ok:hover, #modal-implementation .button-ok:focus{
       text-decoration: none;
     }
-    .button-cancel{
+    #modal-implementation .button-cancel{
       color: #666;
       border-color: #999;
       margin-right: 12px;
     }
-    .button-cancel:hover{
+    #modal-implementation .button-cancel:hover{
       color: #666;
       background-color: #eee;
       border-color: #eee;
     }
-    .button-submit{
+    #modal-implementation .button-submit, #modal-implementation .button-ok{
       color: #fff;
       background-color: #4DA8EF;
       border-color: #4DA8EF;
     }
-    .button-submit:hover{
+    #modal-implementation .button-submit:hover, #modal-implementation .button-ok:hover{
       color: #4DA8EF;
       background-color: #fff;
+    }
+    #modal-implementation .button-ok{
+      width: 100%;
+      margin-top: 30px;
+    }
+    #modal-implementation .intro p{
+      font-size: 20px;
+    }
+    #modal-implementation .modal-thank-you .close{
+      color: #368EE7;
+      position: relative;
+      top: 20px;
+      right: 20px;
+      opacity: 1;
+      z-index: 2;
+    }
+
+    #modal-implementation .completed{
+      color: #368EE7;
+      font-size: 205px;
+      margin-top: 15px;
+    }
+    #modal-implementation .modal-thank-you h2{
+      font-size: 44px;
+      font-weight: 400;
+      margin-bottom: 20px;
+      font-family: 'proxima_nova_rgregular';
     }
   </style>
 
   <a href="#" data-toggle="modal" data-target="#modal-implementation">modal</a>
 
   <!-- program overview introduction modal -->
-  <div class="ms modal fade ms-modal modal-implementation" id="modal-implementation" tabindex="-1">
+  <div class="ms modal fade ms-modal" id="modal-implementation" tabindex="-1">
+
+<!-- dnn fix -->
+<form></form>
+
     <div class="ms modal-backdrop" data-dismiss="modal"></div>
-    <div class="ms-modal-container col-sm-10 col-sm-offset-1">
-      <div class="row modal-header">
+    <div class="ms-modal-container">
+      <div class="modal-form">
+        <div class="modal-header">
+          <a href="#" class="close pull-right" data-dismiss="modal">
+            <i class="glyphicon glyphicon-remove"></i>
+          </a>
+          <h2>Can you help us out?&nbsp;</h2>
+          <span>We'd like to learn about how your school implements Second Step.</span>
+        </div>
+        <div class="modal-body">
+          <!-- <i class="glyphicon glyphicon-check-square">test</i> -->
+          <ol>
+            <li>
+              <p class="prompt">When are Second Step lessons taught at your school?</p>
+              <div class="validate-message hidden">
+                <span></span>
+              </div>
+              <div class="row question">
+                <a data-toggle="collapse" href="#dropdown-implemented-how"><span class="select-text">Select all that apply</span> <i class="ms-caret pull-right"></i></a>
+
+                <!-- dropdown -->
+
+                <div class="collapse" id="dropdown-implemented-how" role="tabpanel">
+                  <form class="form-implemented-how" action="" method="">
+                    <label for="advisory-time">
+                      <input type="checkbox" name="advisory-time" value="Advisory time">
+                      <span>Advisory time</span>
+                    </label>
+                    <label for="core-subject-matter-class">
+                      <input type="checkbox" name="core-subject-matter-class" value="Core subject-matter class">
+                      <span>Core subject-matter class (e.g., English, math or social studies)</span>
+                    </label>
+                    <label for="health-class">
+                      <input type="checkbox" name="health-class" value="Health class">
+                      <span>Health class</span>
+                    </label>
+                    <label for="homeroom">
+                      <input type="checkbox" name="homeroom" value="Homeroom">
+                      <span>Homeroom</span>
+                    </label>
+                    <label for="intervention-period">
+                      <input type="checkbox" name="intervention-period" value="Intervention period">
+                      <span>Intervention period</span>
+                    </label>
+                    <label for="extended-period">
+                      <input type="checkbox" name="extended-period" value="Extended period or SEL-specific period">
+                      <span>Extended period or SEL-specific period</span>
+                    </label>
+                    <label for="other">
+                      <input type="checkbox" name="other" value="Other:">
+                      <span>Other:</span>
+                    </label>
+                  </form>
+                </div>
+              </div>
+              <label for="other-explanation" class="sub-question hidden">
+                If other, please explain:
+                <input class="question" type="text" name="other-explanation" value="">
+                <div class="validate-message-other hidden">
+                  <span></span>
+                </div>
+              </label>
+
+            </li>
+            <li>
+              <p class="prompt">Who teaches Second Step lessons?</p>
+              <div class="validate-message hidden">
+                <span></span>
+              </div>
+              <div class="row question">
+                <a data-toggle="collapse" href="#dropdown-who-teaches"><span class="select-text">Select all that apply</span> <i class="ms-caret pull-right"></i></a>
+
+                <!-- dropdown content -->
+                <div class="collapse" id="dropdown-who-teaches" role="tabpanel">
+                  <form class="form-who-teaches" action="" method="">
+                    <label for="core-subject-teachers">
+                      <input type="checkbox" name="core-subject-teachers" value="Core subject teachers">
+                      <span>Core subject teachers</span>
+                    </label>
+                    <label for="school-counselor">
+                      <input type="checkbox" name="school-counselor" value="School counselor">
+                      <span>School counselor</span>
+                    </label>
+                    <label for="sel-specific-staff">
+                      <input type="checkbox" name="sel-specific staff" value="SEL-specific staff">
+                      <span>SEL-specific staff</span>
+                    </label>
+                    <label for="administrator">
+                      <input type="checkbox" name="administrator" value="Administrator">
+                      <span>Administrator</span>
+                    </label>
+                    <label for="other">
+                      <input type="checkbox" name="other" value="Other:">
+                      <span>Other:</span>
+                    </label>
+                  </form>
+                </div>
+              </div>
+              <label for="other-explanation" class="sub-question hidden">
+                If other, please explain:
+                <input class="question" type="text" name="other-explanation" value="">
+                <div class="validate-message-other hidden">
+                  <span></span>
+                </div>
+              </label>
+
+            </li>
+          </ol>
+          <div class="button-container">
+            <!-- <div class="dont-ask text-left">
+              <label for="dont-ask-me-again">
+                <input type="checkbox" name="dont-ask-me-again" value="Don't ask me again">
+                <span>Don't ask me again</span>
+              </label>
+            </div> -->
+            <a class="button-cancel" href="#">Cancel</a>
+            <a class="button-submit" href="#">Submit</a>
+          </div>
+        </div>
+      </div>
+      <div class="modal-thank-you hidden">
         <a href="#" class="close pull-right" data-dismiss="modal">
           <i class="glyphicon glyphicon-remove"></i>
         </a>
-        <h2>Can you help us out?&nbsp;</h2>
-        <span>We'd like to learn about how your school implements Second Step.</span>
-      </div>
-      <div class="modal-body">
-        <ol>
-          <li>
-            <p class="prompt">When are Second Step lessons taught at your school?</p>
-            <div class="validate-message hidden">
-              <span></span>
-            </div>
-            <div class="row question">
-              <a data-toggle="collapse" href="#dropdown-implemented-how"><span class="select-text">Select all that apply</span> <i class="ms-caret pull-right"></i></a>
-
-              <!-- dropdown -->
-              <div class="collapse" id="dropdown-implemented-how" role="tabpanel">
-                <form class="form-implemented-how" action="" method="">
-                  <label for="advisory-time">
-                    <input type="checkbox" name="advisory-time" value="Advisory time">Advisory time
-                  </label>
-                  <label for="core-subject-matter-class">
-                    <input type="checkbox" name="core-subject-matter-class" value="Core subject-matter class">Core subject-matter class (e.g., English, math or social studies)
-                  </label>
-                  <label for="health-class">
-                    <input type="checkbox" name="health-class" value="Health class">Health class
-                  </label>
-                  <label for="homeroom">
-                    <input type="checkbox" name="homeroom" value="Homeroom">Homeroom
-                  </label>
-                  <label for="intervention-period">
-                    <input type="checkbox" name="intervention-period" value="Intervention period">Intervention period
-                  </label>
-                  <label for="extended-period">
-                    <input type="checkbox" name="extended-period" value="Extended period or SEL-specific period">Extended period or SEL-specific period
-                  </label>
-                  <label for="other">
-                    <input type="checkbox" name="other" value="Other:">Other:
-                  </label>
-                </form>
-              </div>
-            </div>
-            <label for="other-explanation" class="sub-question hidden">
-              If other, please explain:
-              <div class="validate-message-other hidden">
-                <span></span>
-              </div>
-              <input class="question" type="text" name="other-explanation" value="">
-            </label>
-
-          </li>
-          <li>
-            <p class="prompt">Who teaches Second Step lessons?</p>
-            <div class="validate-message hidden">
-              <span></span>
-            </div>
-            <div class="row question">
-              <a data-toggle="collapse" href="#dropdown-who-teaches"><span class="select-text">Select all that apply</span> <i class="ms-caret pull-right"></i></a>
-
-              <!-- dropdown content -->
-              <div class="collapse" id="dropdown-who-teaches" role="tabpanel">
-                <form class="form-who-teaches" action="" method="">
-                  <label for="core-subject-teachers">
-                    <input type="checkbox" name="core-subject-teachers" value="Core subject teachers">Core subject teachers
-                  </label>
-                  <label for="school-counselor">
-                    <input type="checkbox" name="school-counselor" value="School counselor">School counselor
-                  </label>
-                  <label for="sel-specific-staff">
-                    <input type="checkbox" name="sel-specific staff" value="SEL-specific staff">SEL-specific staff
-                  </label>
-                  <label for="administrator">
-                    <input type="checkbox" name="administrator" value="Administrator">Administrator
-                  </label>
-                  <label for="other">
-                    <input type="checkbox" name="other" value="Other:">Other:
-                  </label>
-                </form>
-              </div>
-            </div>
-            <label for="other-explanation" class="sub-question hidden">
-              If other, please explain:
-              <div class="validate-message-other hidden">
-                <span></span>
-              </div>
-              <input class="question" type="text" name="other-explanation" value="">
-            </label>
-
-          </li>
-        </ol>
-        <div class="button-container">
-          <a class="button-cancel" href="#">Cancel</a>
-          <a class="button-submit" href="#">Submit</a>
+        <div class="modal-body">
+          <div class="intro text-center  col-sm-10 col-sm-offset-1">
+            <figure class="completed fa fa-check-circle"></figure>
+            <h2>Thank you!</h2>
+            <p>Your feedback is important and ensures Second Step users get the support they need.</p>
+          </div>
+          <a class="button-ok text-center" href="#">Ok</a>
         </div>
       </div>
     </div>
   </div>
 
-  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 
 
@@ -339,12 +480,12 @@
         element.closest('li').find('.select-text').text(questions[idx]['text'] + ' ' + questions[idx]['checkboxes']['other-explanation']);
       }
 
-      $('form').each(function(idx){
+      $('#modal-implementation form').each(function(idx) {
         $(this).closest('li').attr('data-form-number', idx);
         questions[idx] = {};
       });
 
-      $('form').on('change', function() {
+      $('#modal-implementation form').on('change', function() {
         var $this = $(this);
         var index = $(this).closest('li').attr('data-form-number');
         var checkboxes = {};
@@ -367,68 +508,76 @@
         questions[index]['text'] = text;
         updateSelectText($this, index);
       });
-      $('.sub-question input').on('focusout', function() {
-        var $this =  $(this);
+      $('#modal-implementation .sub-question input').on('focusout', function() {
+        var $this = $(this);
         var index = $this.closest('li').attr('data-form-number');
         questions[index]['checkboxes']['other-explanation'] = $(this).val();
         updateSelectText($this, index);
-        console.log('questions: ', questions);
       });
 
-      $('.button-submit').on('click', function(e){
+      $('#modal-implementation .button-submit').on('click', function(e) {
         e.preventDefault();
         handleValidation();
       });
 
-      function handleValidation(){
-        questions.forEach(function(question, idx){
+      function handleValidation() {
+        var noValidations = true;
+        questions.forEach(function(question, idx) {
           var checks = Object.keys(question);
           var message = '';
           var checked = false;
-          for(prop in question['checkboxes']){
-            if(question['checkboxes'][prop] == true) {
+          for (prop in question['checkboxes']) {
+            if (question['checkboxes'][prop] == true) {
               var checked = true;
             }
           }
-          if(checked == false || checks.length == 0){
-            $('.modal-implementation li[data-form-number="' + idx + '"] .question').addClass('validate');
-            $('.modal-implementation li[data-form-number="' + idx + '"] .validate-message').removeClass('hidden');
-            $('.modal-implementation li[data-form-number="' + idx + '"] .validate-message span').text('Please select at least one');
-          } else{
-            $('.modal-implementation li[data-form-number="' + idx + '"] .question').removeClass('validate');
-            $('.modal-implementation li[data-form-number="' + idx + '"] .validate-message').addClass('hidden');
+          if (checked == false || checks.length == 0) {
+            $('#modal-implementation li[data-form-number="' + idx + '"] .question').addClass('validate');
+            $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message').removeClass('hidden');
+            $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message span').text('Please select at least one');
+            noValidations = false;
+          } else {
+            $('#modal-implementation li[data-form-number="' + idx + '"] .question').removeClass('validate');
+            $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message').addClass('hidden');
           }
 
-          var otherChecked = $('.modal-implementation li[data-form-number="' + idx + '"] input[name="other"]').is(':checked');
-          var otherExplanation = $('.modal-implementation li[data-form-number="' + idx + '"] .sub-question input').val() == '';
-          if(otherChecked == true && otherExplanation == true){
-            $('.modal-implementation li[data-form-number="' + idx + '"] .sub-question .question').addClass('validate');
-            $('.modal-implementation li[data-form-number="' + idx + '"] .validate-message-other').removeClass('hidden');
-            $('.modal-implementation li[data-form-number="' + idx + '"] .validate-message-other span').text('Please explain');
-          } else{
-            $('.modal-implementation li[data-form-number="' + idx + '"] .sub-question .question').removeClass('validate');
-            $('.modal-implementation li[data-form-number="' + idx + '"] .validate-message-other').addClass('hidden');
+          var otherChecked = $('#modal-implementation li[data-form-number="' + idx + '"] input[name="other"]').is(':checked');
+          var otherExplanation = $('#modal-implementation li[data-form-number="' + idx + '"] .sub-question input').val() == '';
+          if (otherChecked == true && otherExplanation == true) {
+            $('#modal-implementation li[data-form-number="' + idx + '"] .sub-question .question').addClass('validate');
+            $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message-other').removeClass('hidden');
+            $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message-other span').text('This field is required.');
+            noValidations = false;
+          } else {
+            $('#modal-implementation li[data-form-number="' + idx + '"] .sub-question .question').removeClass('validate');
+            $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message-other').addClass('hidden');
           }
 
 
 
         });
 
-        submit();
-      }
-
-      function submit(){
+        if(noValidations == true) submit();
+        // if(noValidations == true || $('#modal-implementation .dont-ask input').is(':checked')) submit();
 
       }
 
-      $('.question input[type="checkbox"]').on('change', function() {
+      function submit() {
+        $('#modal-implementation .modal-form, .modal-thank-you').toggleClass('hidden');
+      }
+
+      $('#modal-implementation .button-cancel, .button-ok').on('click', function(){
+        $('#modal-implementation').modal('toggle');
+      })
+
+      $('#modal-implementation .question input[type="checkbox"]').on('change', function() {
         $(this).closest('label').toggleClass('highlighted');
       })
-      $('.question input[type="checkbox"][name="other"]').on('change', function() {
+      $('#modal-implementation .question input[type="checkbox"][name="other"]').on('change', function() {
         $(this).closest('li').find('.sub-question').toggleClass('hidden');
       })
 
-      $('.question').find('.collapse').on('shown.bs.collapse', function() {
+      $('#modal-implementation .question').find('.collapse').on('shown.bs.collapse', function() {
         $(this).parent().find('.ms-caret').addClass('ms-caret-up').removeClass('ms-caret')
       }).on('hidden.bs.collapse', function() {
         $(this).parent().find('.ms-caret-up').addClass('ms-caret').removeClass('ms-caret-up')
