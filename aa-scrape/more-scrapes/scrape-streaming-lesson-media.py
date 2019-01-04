@@ -35,11 +35,10 @@ def openModals(bs):
         content_containers.append({'language': 'spanish', 'soup': spanish, 'xpath': '//div[@class="langToggle"]//div[contains(@class, "spanishContent")]'})
     languages = [{'language': 'a'}] * len(content_containers)
     for container_idx, container in enumerate(content_containers):
-        print('languages: ', languages)
-        print('languages[container_idx]: ', languages[container_idx])
-        languages[container_idx].language = container.language
-        lesson_materials_all = container.soup.find_all('div', attrs={'class': 'lesson-materials'})
-        all_buttons = driver.find_elements_by_xpath(container.xpath + '//div[contains(@class, "button-container")]/a')
+        languages[container_idx]['language'] = container['language']
+        lesson_materials_all = container['soup'].find_all('div', attrs={'class': 'lesson-materials'})
+        print('lesson_materials_all: ', lesson_materials_all)
+        all_buttons = driver.find_elements_by_xpath(container['xpath'] + '//div[contains(@class, "button-container")]/a')
         buttons_modals = [{'language': 'a'}] * len(all_buttons)
         for all_buttons_idx, button in enumerate(all_buttons):
             button.click()
@@ -56,7 +55,7 @@ def openModals(bs):
                     media = element.get_attribute('style').split('media/')[1].split('/')[0]
                 else:
                     media = ' '
-            buttons_modals[all_buttons_idx][container.language] = media
+            buttons_modals[all_buttons_idx][container['language']] = media
             print('made it past languages')
             # below actions click a little bit off of the button (to close the modal) because another element obscures and prevents a click
             close_modal_button = driver.find_element_by_xpath('//div[@class="fancybox-overlay fancybox-overlay-fixed"]')
@@ -83,6 +82,7 @@ def openModals(bs):
                     button_title = button['title']
                     thumbnail_img = ' '
                 button_title = re.sub(' +', ' ', button_title.replace('\n', ' '))
+                print('buttons_modals: ', buttons_modals)
                 new_button = {
                     'item-title': button_title,
                     'thumbnail-image-src': thumbnail_img,

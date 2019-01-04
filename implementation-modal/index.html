@@ -42,10 +42,12 @@
     #modal-implementation.ms .modal-header h2{
       display: inline-block;
       margin-top: 5px;
+      margin-bottom: 0;
       font-family: 'proxima_nova_ltsemibold';
+      font-size: 30px;
     }
     #modal-implementation.ms .modal-header span{
-      font-size: 24px;
+      font-size: 22px;
       line-height: 32px;
     }
     #modal-implementation.ms .modal-header .close{
@@ -55,7 +57,7 @@
       margin-top: 15px;
       margin-left: 15px;
       margin-right: 9px;
-      font-size: 26px;
+      font-size: 24px;
     }
     #modal-implementation.ms .modal-body{
       color: #4A4A4A;
@@ -63,24 +65,24 @@
       padding-right: 20px;
     }
     #modal-implementation.ms p{
-      font-size: 22px;
+      font-size: 20px;
       /* line-height: 24px; */
       margin-bottom: 0;
       color: #4A4A4A;
     }
     #modal-implementation.ms span{
-      font-size: 20px;
+      font-size: 18px;
     }
     #modal-implementation.ms ol{
       padding: 0;
-      font-size: 20px;
+      font-size: 18px;
       line-height: 24px;
       margin-left: 24px;
       margin-right: -16px;
     }
     #modal-implementation.ms ol li{
       margin-top: 25px;
-      font-size: 20px;
+      font-size: 18px;
       color: #4A4A4A;
     }
     #modal-implementation.ms ol li:first-of-type{
@@ -120,7 +122,7 @@
       margin-left: 3px;
      }
     #modal-implementation.ms .validate-message span, #modal-implementation.ms .validate-message-other span{
-      font-size: 17px;
+      font-size: 15px;
     }
     #modal-implementation.ms .validate-message.hidden{
       display: none;
@@ -159,7 +161,7 @@
       content: '\f096';
       display: inline-block;
       letter-spacing: 11px;
-      font-size: 20px;
+      font-size: 18px;
       position: relative;
       top: 1px;
       z-index: 1;
@@ -189,13 +191,13 @@
     }
     #modal-implementation.ms .dont-ask input[type=checkbox] + span:before{
       top: 2px;
-      font-size: 18px;
+      font-size: 16px;
       letter-spacing: 5px;
     }
 
     #modal-implementation.ms .dont-ask input[type=checkbox]:checked + span:before{
       top: 2px;
-      font-size: 18px;
+      font-size: 16px;
       letter-spacing: 4px;
       color: #4DA8EF;
     }
@@ -242,7 +244,7 @@
       margin-bottom: 0;
     }
     #modal-implementation.ms .sub-question{
-      font-size: 18px;
+      font-size: 16px;
       margin-left: -20px;
     }
     #modal-implementation.ms .sub-question input{
@@ -286,7 +288,7 @@
       display: inline-block;
       width: calc(50% - 12px);
       text-transform: uppercase;
-      font-size: 18px;
+      font-size: 16px;
       line-height: 22px;
       transition: 250ms ease;
       font-family: "proxima_nova_rgbold";
@@ -318,7 +320,7 @@
       margin-top: 35px;
     }
     #modal-implementation.ms .intro p{
-      font-size: 20px;
+      font-size: 18px;
     }
     #modal-implementation.ms .modal-thank-you .modal-body{
       width: 92%;
@@ -331,7 +333,7 @@
       right: 25px;
       opacity: 1;
       z-index: 2;
-      font-size: 26px;
+      font-size: 24px;
     }
 
     #modal-implementation.ms .modal-thank-you .close:hover{
@@ -345,7 +347,7 @@
       margin-bottom: 35px;
     }
     #modal-implementation.ms .modal-thank-you h2{
-      font-size: 46px;
+      font-size: 44px;
       line-height: 23px;
       font-weight: 400;
       margin-bottom: 35px;
@@ -551,7 +553,7 @@
         if($this.val() == ''){
           $this.closest('.sub-question').find('.question').addClass('validate');
           $this.closest('.sub-question').find('.validate-message-other').removeClass('hidden');
-          $this.closest('.sub-question').find('.validate-message-otherspan').text('This field is required.');
+          $this.closest('.sub-question').find('.validate-message-other span').text('This field is required.');
         }
       });
 
