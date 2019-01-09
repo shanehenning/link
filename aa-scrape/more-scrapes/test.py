@@ -1,4 +1,6 @@
-arr = []
-arr.append('hello')
-arr.append('goodbye')
-print(arr[1])
+import json
+
+string = "Historia y conversaci\xf3n"
+string = string.encode('hex')
+
+print(string.decode('hex'))

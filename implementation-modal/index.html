@@ -217,6 +217,7 @@
       font-size: 16px;
       margin: 0;
       position: relative;
+      font-family: 'proxima_nova_rgregular';
     }
     #modal-implementation.ms label:hover{
       background-color: #FBFCFE;
@@ -225,7 +226,7 @@
       outline: -webkit-focus-ring-color auto 5px;
     } */
     #modal-implementation.ms label.highlighted{
-    	background-color: rgba(48,140,233,0.1);
+    	background-color: rgba(48,140,233,0.1) !important;
       color: #308CE9;
       font-family: 'proxima_nova_ltsemibold';
     }
@@ -599,14 +600,66 @@
 
         });
 
+
+        // below will go in submit()
+        questions.forEach(function(question, idx){
+          for(prop in question['checkboxes']){
+            if(question['checkboxes'][prop] == true){
+              if(prop == 'Other:'){
+                console.log({
+                  'question_num': idx,
+                  'response': prop + question['checkboxes']['other-explanation']
+                });
+              } else{
+                console.log({
+                  'question_num': idx,
+                  'response': prop
+                });
+              }
+            }
+
+          }
+        });
+        // end submit()
+
+
         if(noValidations == true) submit();
         // if(noValidations == true || $('#modal-implementation .dont-ask input').is(':checked')) submit();
 
       }
 
+
+// Can Metric take in an array of objects, or will it have to be a series of POSTs with just individual objects?
+      function sendData(){
+        questions.forEach(function(question, idx){
+          for(prop in question['checkboxes']){
+            if(question['checkboxes'][prop] == true){
+              if(prop == 'Other:'){
+                console.log({
+                  'question_num': idx,
+                  'response': prop + ' ' + question['checkboxes']['other-explanation']
+                });
+              } else{
+                console.log({
+                  'question_num': idx,
+                  'response': prop
+                });
+              }
+            }
+          }
+        });
+      }
+
       function submit() {
         $('#modal-implementation .modal-form, .modal-thank-you').toggleClass('hidden');
+        sendData();
       }
+
+      $('#modal-implementation input[type="checkbox"]').on('focus', function(){
+        $(this).parent().css({'background-color': 'rgba(155, 155, 155, 0.1)'});
+      }).on('focusout', function(){
+        $(this).parent().css({'background-color': ''});
+      });
 
       $('#modal-implementation .button-cancel, .button-ok').on('click', function(){
         $('#modal-implementation').modal('toggle');
