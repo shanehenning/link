@@ -39,6 +39,36 @@ def checkLanguageToggle(lang):
             # print('toggled to spanish')
             time.sleep(.55)
 
+def checkForNext(selenium_driver, media_array):
+    print('in checkForNext')
+    img = ''
+    img = WebDriverWait(driver, 1).until(
+        EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//img[@class="fancybox-image"]'))
+    )
+    media = 'https://www.secondstep.org' + img.get_attribute('src')
+    if img != '':
+        media_title = selenium_driver.find_element_by_xpath('//div[contains(@class, "fancybox-opened")]//div[contains(@class, "fancybox-title")]').text
+    else:
+        media_title = ''
+    media_array.append({'media': media, 'media-title': media_title})
+    print('media_array: ', media_array)
+    try:
+        if check_exists_by_xpath('//a[contains(@class, "fancybox-next")]') == True:
+            print('sending to checkForNext')
+            driver.find_element_by_xpath('//a[contains(@class, "fancybox-next")]').click()
+            checkForNext(selenium_driver, media_array)
+    except:
+        print('returning media_array')
+        return media_array
+    print('end of checkForNext')
+
+def check_exists_by_xpath(xpath):
+    try:
+        driver.find_element_by_xpath(xpath)
+    except driver.NoSuchElementException:
+        return False
+    return True
+
 def openModals(bs):
     content_containers = []
     currentLanguage = 'english'
@@ -63,17 +93,36 @@ def openModals(bs):
 
         lesson_materials_all[container_idx] = {'language': container['language'], 'content' : container['soup'].find_all('div', attrs={'class': 'lesson-materials'})}
 
-        all_buttons = {'buttons': driver.find_elements_by_xpath(container['xpath'] + '//div[contains(@class, "button-container")]/a'), 'language': container['language']}
-        buttons_modals = [{}] * len(all_buttons['buttons'])
-        for all_buttons_idx, button in enumerate(all_buttons['buttons']):
+        all_buttons = []
+        all_buttons_initial = driver.find_elements_by_xpath(container['xpath'] + '//div[contains(@class, "button-container")]/a')
+        for button_initial_idx, button_initial in enumerate(all_buttons_initial):
+            if button_initial.find_element_by_xpath('.//img') == True:
+                all_buttons.append(button_initial)
+
+        buttons_modals = [{}] * len(all_buttons)
+        print('all_buttons: ', all_buttons)
+        for all_buttons_idx, button in enumerate(all_buttons):
+            print('button: ', button)
+            medias = []
+            multiple_media = False
             # checkLanguageToggle(button['language'])
             button.click()
             try: # look for image
+                print('in img try')
                 img = WebDriverWait(driver, 1).until(
                     EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//img[@class="fancybox-image"]'))
                 )
-                media = 'https://www.secondstep.org' + img.get_attribute('src')
+                print('next exists? ', check_exists_by_xpath('//a[contains(@class, "fancybox-next")]'))
+                if check_exists_by_xpath('//a[contains(@class, "fancybox-next")]') == True:
+                    print('sending to checkForNext')
+                    checkForNext(driver, medias)
+                    multiple_media = True
+                else:
+                    media = 'https://www.secondstep.org' + img.get_attribute('src')
+
             except: # look instead for video
+                # if multiple_media == True:
+                    # pass
                 element = WebDriverWait(driver,5).until(
                     EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//div[@class="vjs-poster"]'))
                 )
@@ -81,7 +130,10 @@ def openModals(bs):
                     media = element.get_attribute('style').split('media/')[1].split('/')[0]
                 else:
                     media = ' '
-            buttons_modals[all_buttons_idx] = media
+            if multiple_media == True:
+                buttons_modals[all_buttons_idx] = medias
+            else:
+                buttons_modals[all_buttons_idx] = media
             # below actions click a little bit off of the button (to close the modal) because another element obscures and prevents a click
             close_modal_button = driver.find_element_by_xpath('//div[@class="fancybox-overlay fancybox-overlay-fixed"]')
             action = webdriver.common.action_chains.ActionChains(driver)
@@ -91,44 +143,44 @@ def openModals(bs):
 
             # wait for modal to close before next index
             time.sleep(.55)
-
+    print('button_modals: ', button_modals)
     data = ['a'] * len(lesson_materials_all)
     for materials_idx, materials in enumerate(lesson_materials_all):
         counter = 0
         items = ['a'] * len(materials['content'])
         for item_idx, item in enumerate(materials['content']):
             heading = item.find('p', attrs={'class': 'gray-header'}).text.strip()
-            buttons = item.find_all('a', attrs={'class': 'dm-bt'})
+            fancybox_buttons = item.find_all('a', attrs={'class': 'dm-bt'})
+            for fancybox_idx, fancybox in enumerate(fancybox_buttons):
+                if len(fancybox.findChildren()) > 0:
+                    buttons.append(fancybox)
+
             lesson_materials_buttons = ['a'] * len(buttons)
+            new_material = []
             for button_idx, button in enumerate(buttons):
                 button_title = button.find('p', attrs={'class': 'bt-small'})
-                print('button_title: ', button_title)
                 if hasattr(button_title, 'text'):
                     button_title = button_title.text.strip()
-                    print('button_title: ', button_title)
                     thumbnail_img = button.find('img')['src']
                 else:
                     button_title = button['title']
                     thumbnail_img = ' '
                 button_title = re.sub(' +', ' ', button_title.replace('\n', ' '))
+                print('button_title: ', button_title)
                 new_button = {
                     'item-title': button_title,
                     'thumbnail-image-src': thumbnail_img,
                     'modal-media': buttons_modals[counter]
                 }
                 counter += 1
-            new_material = {
-                'heading': heading,
-                'content': new_button
-            }
-            items[item_idx] = new_material
+                new_material.append(new_button)
+            items[item_idx] = {'heading': heading, 'content': new_material }
         data[materials_idx] = {materials['language'] : items}
         print('data: ', data)
     pages[name] = data
 
 def scrape_content():
     soup = BeautifulSoup(driver.page_source.encode('utf-8'), 'html.parser')
-    print('soup encode: ', soup.original_encoding)
     openModals(soup)
 
 
@@ -144,8 +196,8 @@ site_login()
 #     if grade_count > 2:
 #         grade = 'grade-' + str(grade_count - 2)
 #         URL = URL + grade + '/Lesson-'
-page_count = 2
-while page_count < 3:
+page_count = 6
+while page_count < 7:
     driver.get(URL + str(page_count))
     # dynamically create name based upon url, for ex: grade-4-lesson-1
     address = driver.current_url
