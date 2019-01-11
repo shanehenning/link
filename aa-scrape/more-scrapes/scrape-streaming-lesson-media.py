@@ -53,7 +53,7 @@ def checkForNext(selenium_driver, media_array):
     media_array.append({'media': media, 'media-title': media_title})
     print('media_array: ', media_array)
     try:
-        if check_exists_by_xpath('//a[contains(@class, "fancybox-next")]') == True:
+        if check_exists_by_xpath(driver, '//a[contains(@class, "fancybox-next")]') == True:
             print('sending to checkForNext')
             driver.find_element_by_xpath('//a[contains(@class, "fancybox-next")]').click()
             checkForNext(selenium_driver, media_array)
@@ -62,7 +62,7 @@ def checkForNext(selenium_driver, media_array):
         return media_array
     print('end of checkForNext')
 
-def check_exists_by_xpath(xpath):
+def check_exists_by_xpath(entry, xpath):
     try:
         driver.find_element_by_xpath(xpath)
     except driver.NoSuchElementException:
@@ -95,8 +95,11 @@ def openModals(bs):
 
         all_buttons = []
         all_buttons_initial = driver.find_elements_by_xpath(container['xpath'] + '//div[contains(@class, "button-container")]/a')
+        print('all_buttons_initial: ', all_buttons_initial)
         for button_initial_idx, button_initial in enumerate(all_buttons_initial):
-            if button_initial.find_element_by_xpath('.//img') == True:
+            print('check exists a: ', check_exists_by_xpath(button_initial, './/img'))
+            # print('length: ', len(button_initial.find_element_by_xpath('.//p')))
+            if check_exists_by_xpath(button_initial, './/img'):
                 all_buttons.append(button_initial)
 
         buttons_modals = [{}] * len(all_buttons)
@@ -112,8 +115,8 @@ def openModals(bs):
                 img = WebDriverWait(driver, 1).until(
                     EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//img[@class="fancybox-image"]'))
                 )
-                print('next exists? ', check_exists_by_xpath('//a[contains(@class, "fancybox-next")]'))
-                if check_exists_by_xpath('//a[contains(@class, "fancybox-next")]') == True:
+                print('next exists? ', check_exists_by_xpath(driver, '//a[contains(@class, "fancybox-next")]'))
+                if check_exists_by_xpath(driver, '//a[contains(@class, "fancybox-next")]') == True:
                     print('sending to checkForNext')
                     checkForNext(driver, medias)
                     multiple_media = True

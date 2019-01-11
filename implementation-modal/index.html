@@ -10,8 +10,8 @@
 
 <body>
 
-    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
 
   <style>
@@ -362,8 +362,8 @@
   <!-- program overview introduction modal -->
   <div class="ms modal fade ms-modal" id="modal-implementation" tabindex="-1">
 
-<!-- dnn fix -->
-<form></form>
+    <!-- dnn fix -->
+    <form></form>
 
     <div class="ms modal-backdrop" data-dismiss="modal"></div>
     <div class="ms-modal-container">
@@ -551,7 +551,7 @@
         $this.closest('li').find('.question').removeClass('validate');
         $this.closest('li').find('.validate-message-other').addClass('hidden');
 
-        if($this.val() == ''){
+        if ($this.val() == '') {
           $this.closest('.sub-question').find('.question').addClass('validate');
           $this.closest('.sub-question').find('.validate-message-other').removeClass('hidden');
           $this.closest('.sub-question').find('.validate-message-other span').text('This field is required.');
@@ -595,53 +595,33 @@
             $('#modal-implementation li[data-form-number="' + idx + '"] .sub-question .question').removeClass('validate');
             $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message-other').addClass('hidden');
           }
-
-
-
         });
 
-
-        // below will go in submit()
-        questions.forEach(function(question, idx){
-          for(prop in question['checkboxes']){
-            if(question['checkboxes'][prop] == true){
-              if(prop == 'Other:'){
-                console.log({
-                  'question_num': idx,
-                  'response': prop + question['checkboxes']['other-explanation']
-                });
-              } else{
-                console.log({
-                  'question_num': idx,
-                  'response': prop
-                });
-              }
-            }
-
-          }
-        });
-        // end submit()
-
-
-        if(noValidations == true) submit();
+        if (noValidations == true) submit();
         // if(noValidations == true || $('#modal-implementation .dont-ask input').is(':checked')) submit();
 
       }
 
-
-// Can Metric take in an array of objects, or will it have to be a series of POSTs with just individual objects?
-      function sendData(){
-        questions.forEach(function(question, idx){
-          for(prop in question['checkboxes']){
-            if(question['checkboxes'][prop] == true){
-              if(prop == 'Other:'){
-                console.log({
-                  'question_num': idx,
+      function sendData() {
+        questions.forEach(function(question, idx) {
+          for (prop in question['checkboxes']) {
+            if (question['checkboxes'][prop] == true) {
+              if (prop == 'Other:') {
+                window.__CFCMETRICS__ && window.__CFCMETRICS__.send('segmentation_survey', {
+                  'question_num': idx + 1,
                   'response': prop + ' ' + question['checkboxes']['other-explanation']
                 });
-              } else{
                 console.log({
-                  'question_num': idx,
+                  'question_num': idx + 1,
+                  'response': prop + ' ' + question['checkboxes']['other-explanation']
+                });
+              } else {
+                window.__CFCMETRICS__ && window.__CFCMETRICS__.send('segmentation_survey', {
+                  'question_num': idx + 1,
+                  'response': prop
+                });
+                console.log({
+                  'question_num': idx + 1,
                   'response': prop
                 });
               }
@@ -655,13 +635,17 @@
         sendData();
       }
 
-      $('#modal-implementation input[type="checkbox"]').on('focus', function(){
-        $(this).parent().css({'background-color': 'rgba(155, 155, 155, 0.1)'});
-      }).on('focusout', function(){
-        $(this).parent().css({'background-color': ''});
+      $('#modal-implementation input[type="checkbox"]').on('focus', function() {
+        $(this).parent().css({
+          'background-color': 'rgba(155, 155, 155, 0.1)'
+        });
+      }).on('focusout', function() {
+        $(this).parent().css({
+          'background-color': ''
+        });
       });
 
-      $('#modal-implementation .button-cancel, .button-ok').on('click', function(){
+      $('#modal-implementation .button-cancel, .button-ok').on('click', function() {
         $('#modal-implementation').modal('toggle');
       })
 

@@ -121,6 +121,351 @@
   }
 </style>
 
+<!-- segmentation survey styles -->
+<style>
+  #modal-implementation.ms{
+    z-index: 1100;
+  }
+  #modal-implementation.ms .modal-backdrop{
+    display: none;
+  }
+  #modal-implementation.ms .ms-modal-container{
+    position: relative;
+    background: #fff;
+    top: 10%;
+    max-width: 700px;
+    width: 90%;
+    margin: 0 auto;
+  }
+  #modal-implementation.ms .modal-form.hidden, #modal-implementation.ms .modal-thank-you.hidden{
+    display:none;
+  }
+  #modal-implementation.ms .modal-header{
+    background-color: #308CE9;
+    padding-left: 25px;
+  }
+  #modal-implementation.ms .modal-header h2, #modal-implementation.ms .modal-header span, #modal-implementation.ms .modal-header .close{
+    color: #fff;
+  }
+  #modal-implementation.ms .modal-header h2{
+    display: inline-block;
+    margin-top: 5px;
+    margin-bottom: 0;
+    font-family: 'proxima_nova_ltsemibold';
+    font-size: 30px;
+  }
+  #modal-implementation.ms .modal-header span{
+    font-size: 22px;
+    line-height: 32px;
+  }
+  #modal-implementation.ms .modal-header .close{
+    opacity: 1;
+    color: #fff;
+    text-shadow: none;
+    margin-top: 15px;
+    margin-left: 15px;
+    margin-right: 9px;
+    font-size: 24px;
+  }
+  #modal-implementation.ms .modal-body{
+    color: #4A4A4A;
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  #modal-implementation.ms p{
+    font-size: 20px;
+    /* line-height: 24px; */
+    margin-bottom: 0;
+    color: #4A4A4A;
+  }
+  #modal-implementation.ms span{
+    font-size: 18px;
+  }
+  #modal-implementation.ms ol{
+    padding: 0;
+    font-size: 18px;
+    line-height: 24px;
+    margin-left: 24px;
+    margin-right: -16px;
+  }
+  #modal-implementation.ms ol li{
+    margin-top: 25px;
+    font-size: 18px;
+    color: #4A4A4A;
+  }
+  #modal-implementation.ms ol li:first-of-type{
+    margin-top: 0;
+  }
+  #modal-implementation.ms .panel-heading{
+    padding-right: 0;
+  }
+  #modal-implementation.ms .panel-title a{
+    display: block;
+  }
+
+  #modal-implementation.ms .question{
+    display: block;
+    margin: 10px 0 15px;
+    margin-left: -20px;
+    width: 100%;
+    border: 1px solid #9b9b9b;
+    border-radius: 4px;
+    padding: 5px 18px;
+  }
+  #modal-implementation.ms .question.validate{
+    border-color: #F18679;
+    border-width: 1px;
+    /* margin-top: 5px; */
+    margin-bottom: 5px;
+  }
+  #modal-implementation.ms .validate-message, #modal-implementation.ms .validate-message-other{
+    display: block;
+    color: #F18679;
+    width: 100%;
+    padding: 0;
+    margin-left: -16px;
+    font-family: "proxima_nova_rgbold";
+  }
+   #modal-implementation.ms .validate-message-other{
+    margin-left: 3px;
+   }
+  #modal-implementation.ms .validate-message span, #modal-implementation.ms .validate-message-other span{
+    font-size: 15px;
+  }
+  #modal-implementation.ms .validate-message.hidden{
+    display: none;
+  }
+
+  #modal-implementation.ms .question a{
+    color: #4A4A4A;
+    display: block;
+  }
+  #modal-implementation.ms .question a:focus{
+    text-decoration: none;
+  }
+  #modal-implementation.ms form{
+    padding-top: 10px;
+  }
+
+  #modal-implementation.ms form input{
+    margin-left: 10px;
+  }
+
+  #modal-implementation.ms input[type=checkbox]{
+    position: absolute;
+    opacity: 0.01;
+    top: 0;
+    margin: 0;
+    margin-left: -15px;
+    display: block;
+    width: 100%;
+    height: 42px;
+    cursor: pointer;
+    z-index: 2;
+  }
+
+  #modal-implementation.ms label input[type=checkbox] + span:before{
+    font-family: FontAwesome;
+    content: '\f096';
+    display: inline-block;
+    letter-spacing: 11px;
+    font-size: 18px;
+    position: relative;
+    top: 1px;
+    z-index: 1;
+  }
+  #modal-implementation.ms label input[type=checkbox]:checked + span:before{
+    content: '\f14a';
+    letter-spacing: 10px;
+  }
+  #modal-implementation.ms label input[type=checkbox]:indeterminate + span:before{
+    content: '\f147';
+    letter-spacing: 11px;
+  }
+
+  #modal-implementation.ms .dont-ask label{
+    margin: 5px 10px 5px;
+    font-size: 14px;
+    display: inline-block;
+  }
+
+  #modal-implementation.ms .dont-ask input[type=checkbox]{
+    height: auto;
+    width: auto;
+    margin: 0;
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+  #modal-implementation.ms .dont-ask input[type=checkbox] + span:before{
+    top: 2px;
+    font-size: 16px;
+    letter-spacing: 5px;
+  }
+
+  #modal-implementation.ms .dont-ask input[type=checkbox]:checked + span:before{
+    top: 2px;
+    font-size: 16px;
+    letter-spacing: 4px;
+    color: #4DA8EF;
+  }
+
+  #modal-implementation.ms .dont-ask input[type=checkbox]:indeterminate + span:before{
+    content: '\f147';
+    letter-spacing: 5px;
+  }
+
+  #modal-implementation.ms label, #modal-implementation.ms .question a{
+    display: block;
+    /* font-size: 18px; */
+    line-height: 26px;
+    font-weight: 400;
+  }
+  #modal-implementation.ms label{
+    font-size: 16px;
+    margin: 0;
+    position: relative;
+    font-family: 'proxima_nova_rgregular';
+  }
+  #modal-implementation.ms label:hover{
+    background-color: #FBFCFE;
+  }
+  /* #modal-implementation.ms .collapse label:focus-within{
+    outline: -webkit-focus-ring-color auto 5px;
+  } */
+  #modal-implementation.ms label.highlighted{
+    background-color: rgba(48,140,233,0.1) !important;
+    color: #308CE9;
+    font-family: 'proxima_nova_ltsemibold';
+  }
+  #modal-implementation.ms .question a{
+    font-size: 16px;
+  }
+  #modal-implementation.ms .question label{
+    padding: 5px 0;
+    padding-left: 15px;
+    line-height: 32px;
+    border-bottom: 0.5px solid #979797;
+  }
+  #modal-implementation.ms .question label:last-of-type{
+    border-bottom: 0;
+    padding-bottom: 0;
+    margin-bottom: 0;
+  }
+  #modal-implementation.ms .sub-question{
+    font-size: 16px;
+    margin-left: -20px;
+  }
+  #modal-implementation.ms .sub-question input{
+    margin-left: 0;
+  }
+  #modal-implementation.ms .sub-question.hidden{
+    display: none;
+  }
+
+  #modal-implementation.ms .ms-caret, #modal-implementation.ms .ms-caret-up{
+    display: inline-block;
+    margin-left: 2px;
+    margin-top: 10px;
+    border-right: 9px solid transparent;
+    border-left: 9px solid transparent;
+    color: #8c8c8c;
+  }
+  #modal-implementation.ms .ms-caret{
+    border-top: 10px dashed;
+  }
+  #modal-implementation.ms .ms-caret-up{
+    position: relative;
+    bottom: 1px;
+    border-bottom: 10px dashed;
+  }
+
+  #modal-implementation.ms .button-container{
+    text-align: center;
+    /* margin-top: 15px; */
+    margin-top: 45px;
+    margin-bottom: 10px;
+  }
+
+  #modal-implementation.ms .button-cancel, #modal-implementation.ms .button-submit, #modal-implementation.ms .button-ok{
+    padding-top: 10px;
+    padding-bottom: 10px;
+    border-radius: 8px;
+    border-width: 2px;
+    border-style: solid;
+    letter-spacing: 2px;
+    display: inline-block;
+    width: calc(50% - 12px);
+    text-transform: uppercase;
+    font-size: 16px;
+    line-height: 22px;
+    transition: 250ms ease;
+    font-family: "proxima_nova_rgbold";
+  }
+  #modal-implementation.ms .button-cancel:hover, #modal-implementation.ms .button-cancel:focus, #modal-implementation.ms .button-submit:hover, #modal-implementation.ms .button-submit:focus, #modal-implementation.ms .button-ok:hover, #modal-implementation.ms .button-ok:focus, #modal-implementation.ms .question a{
+    text-decoration: none;
+  }
+  #modal-implementation.ms .button-cancel{
+    color: #666;
+    border-color: #979797;
+    margin-right: 12px;
+  }
+  #modal-implementation.ms .button-cancel:hover{
+    color: #666;
+    background-color: #eee;
+    border-color: #979797;
+  }
+  #modal-implementation.ms .button-submit, #modal-implementation.ms .button-ok{
+    color: #fff;
+    background-color: #308CE9;
+    border-color: #308CE9;
+  }
+  #modal-implementation.ms .button-submit:hover, #modal-implementation.ms .button-ok:hover{
+    color: #48A7F2;
+    background-color: #fff;
+  }
+  #modal-implementation.ms .button-ok{
+    width: 100%;
+    margin-top: 35px;
+  }
+  #modal-implementation.ms .intro p{
+    font-size: 18px;
+  }
+  #modal-implementation.ms .modal-thank-you .modal-body{
+    width: 92%;
+    margin: 0 auto;
+  }
+  #modal-implementation.ms .modal-thank-you .close{
+    color: #308CE9;
+    position: relative;
+    top: 25px;
+    right: 25px;
+    opacity: 1;
+    z-index: 2;
+    font-size: 24px;
+  }
+
+  #modal-implementation.ms .modal-thank-you .close:hover{
+    color: #D2E8FF;
+  }
+
+  #modal-implementation.ms .completed{
+    color: #308CE9;
+    font-size: 205px;
+    margin-top: 15px;
+    margin-bottom: 35px;
+  }
+  #modal-implementation.ms .modal-thank-you h2{
+    font-size: 44px;
+    line-height: 23px;
+    font-weight: 400;
+    margin-bottom: 35px;
+    font-family: 'proxima_nova_rgregular';
+    color: #4A4A4A;
+  }
+</style>
+<!-- end segmentation survey styles -->
+
 <!-- program overview introduction modal -->
 <div class="ms modal fade ms-modal ms-tutorial-modal in modal-introduction" id="program-overview-introduction-tutorial-modal" tabindex="-1">
   <div class="ms modal-backdrop" data-dismiss="modal"></div>
@@ -136,7 +481,7 @@
     <div class="modal-footer">
       <div class="row text-left">
         <div class="col-sm-12">
-          <p class="footer-copy"><strong>Want more guidance? These tutorials show you exactly what you can find in each section.</strong><br/> Watch them now or whenever you need them&mdash;tutorials can always be found in the navigation bar.
+          <p class="footer-copy"><strong>Want more guidance? These tutorials show you exactly what you can find in each section.</strong><br /> Watch them now or whenever you need them&mdash;tutorials can always be found in the navigation bar.
           </p>
           <div class="row col-sm-12 text-left">
             <ul class="list-inline list-unstyled">
@@ -178,12 +523,175 @@
   </div>
 </div>
 
+
+
+<!-- segmentation survey html -->
+<!-- program overview introduction modal -->
+<div class="ms modal fade ms-modal" id="modal-implementation" tabindex="-1">
+
+  <!-- dnn fix -->
+  <form></form>
+
+  <div class="ms modal-backdrop" data-dismiss="modal"></div>
+  <div class="ms-modal-container">
+    <div class="modal-form">
+      <div class="modal-header">
+        <a href="#" class="close pull-right" data-dismiss="modal">
+          <i class="glyphicon glyphicon-remove"></i>
+        </a>
+        <h2>Can you help us out?&nbsp;</h2>
+        <span>We'd like to learn about how your school implements Second Step.</span>
+      </div>
+      <div class="modal-body">
+        <!-- <i class="glyphicon glyphicon-check-square">test</i> -->
+        <ol>
+          <li>
+            <p class="prompt">When are Second Step lessons taught at your school?</p>
+            <div class="row question">
+              <a data-toggle="collapse" href="#dropdown-implemented-how"><span class="select-text">Select all that apply</span> <i class="ms-caret pull-right"></i></a>
+
+              <!-- dropdown -->
+
+              <div class="collapse" id="dropdown-implemented-how" role="tabpanel">
+                <form class="form-implemented-how" action="" method="">
+                  <label for="advisory-time">
+                    <input type="checkbox" name="advisory-time" value="Advisory time">
+                    <span>Advisory time</span>
+                  </label>
+                  <label for="core-subject-matter-class">
+                    <input type="checkbox" name="core-subject-matter-class" value="Core subject-matter class">
+                    <span>Core subject-matter class (e.g., English, math or social studies)</span>
+                  </label>
+                  <label for="health-class">
+                    <input type="checkbox" name="health-class" value="Health class">
+                    <span>Health class</span>
+                  </label>
+                  <label for="homeroom">
+                    <input type="checkbox" name="homeroom" value="Homeroom">
+                    <span>Homeroom</span>
+                  </label>
+                  <label for="intervention-period">
+                    <input type="checkbox" name="intervention-period" value="Intervention period">
+                    <span>Intervention period</span>
+                  </label>
+                  <label for="extended-period">
+                    <input type="checkbox" name="extended-period" value="Extended period or SEL-specific period">
+                    <span>Extended period or SEL-specific period</span>
+                  </label>
+                  <label for="other">
+                    <input type="checkbox" name="other" value="Other:">
+                    <span>Other:</span>
+                  </label>
+                </form>
+              </div>
+            </div>
+            <div class="validate-message hidden">
+              <span></span>
+            </div>
+            <label for="other-explanation" class="sub-question hidden">
+              If other, please explain:
+              <input class="question" type="text" name="other-explanation" value="">
+              <div class="validate-message-other hidden">
+                <span></span>
+              </div>
+            </label>
+
+          </li>
+          <li>
+            <p class="prompt">Who teaches Second Step lessons?</p>
+            <div class="row question">
+              <a data-toggle="collapse" href="#dropdown-who-teaches"><span class="select-text">Select all that apply</span> <i class="ms-caret pull-right"></i></a>
+
+              <!-- dropdown content -->
+              <div class="collapse" id="dropdown-who-teaches" role="tabpanel">
+                <form class="form-who-teaches" action="" method="">
+                  <label for="core-subject-teachers">
+                    <input type="checkbox" name="core-subject-teachers" value="Core subject teachers">
+                    <span>Core subject teachers</span>
+                  </label>
+                  <label for="school-counselor">
+                    <input type="checkbox" name="school-counselor" value="School counselor">
+                    <span>School counselor</span>
+                  </label>
+                  <label for="sel-specific-staff">
+                    <input type="checkbox" name="sel-specific staff" value="SEL-specific staff">
+                    <span>SEL-specific staff</span>
+                  </label>
+                  <label for="administrator">
+                    <input type="checkbox" name="administrator" value="Administrator">
+                    <span>Administrator</span>
+                  </label>
+                  <label for="other">
+                    <input type="checkbox" name="other" value="Other:">
+                    <span>Other:</span>
+                  </label>
+                </form>
+              </div>
+            </div>
+            <div class="validate-message hidden">
+              <span></span>
+            </div>
+            <label for="other-explanation" class="sub-question hidden">
+              If other, please explain:
+              <input class="question" type="text" name="other-explanation" value="">
+              <div class="validate-message-other hidden">
+                <span></span>
+              </div>
+            </label>
+
+          </li>
+        </ol>
+        <div class="button-container">
+          <!-- <div class="dont-ask text-left">
+            <label for="dont-ask-me-again">
+              <input type="checkbox" name="dont-ask-me-again" value="Don't ask me again">
+              <span>Don't ask me again</span>
+            </label>
+          </div> -->
+          <a class="button-cancel" href="#">Cancel</a>
+          <a class="button-submit" href="#">Submit</a>
+        </div>
+      </div>
+    </div>
+    <div class="modal-thank-you hidden">
+      <a href="#" class="close pull-right" data-dismiss="modal">
+        <i class="glyphicon glyphicon-remove"></i>
+      </a>
+      <div class="modal-body">
+        <div class="intro text-center  col-sm-10 col-sm-offset-1">
+          <figure class="completed fa fa-check-circle"></figure>
+          <h2>Thank you!</h2>
+          <p>Your feedback is important and ensures Second Step users get the support they need.</p>
+        </div>
+        <a class="button-ok text-center" href="#">Ok</a>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- end segmentation survey html -->
+
 <script>
   $(document).ready(function() {
     var metricsType = 'ui_interaction';
     var metricsCat = 'new_user_modal';
 
-    var firstTimeUserExperience, implementationData;
+    var firstTimeUserExperience, segmentationData, seenFtue;
+
+    function setPersonalizationData(key, newData) {
+      $.ajax({
+        type: 'POST',
+        url: '/DesktopModules/UserStore/API/Personalization/Set',
+        dataType: 'json',
+        cache: false,
+        contentType: 'application/json; charset=utf-8',
+        data: JSON.stringify({
+          key: key,
+          value: JSON.stringify(newData)
+        })
+      }).fail(function(x) {
+        console.error(x.responseText);
+      });
+    }
 
     function getFtueData() {
       $.ajax({
@@ -191,6 +699,7 @@
         url: '/DesktopModules/UserStore/API/Personalization/Get?key=ftueData',
         cache: false
       }).fail(function(x) {
+        seenFtue = false;
         setPersonalizationData('ftueData', {
           'middle-school': false,
           'teach': false,
@@ -209,21 +718,6 @@
       });
     }
 
-    function setPersonalizationData(key, newData) {
-      $.ajax({
-        type: 'POST',
-        url: '/DesktopModules/UserStore/API/Personalization/Set',
-        dataType: 'json',
-        cache: false,
-        contentType: 'application/json; charset=utf-8',
-        data: JSON.stringify({
-          key: key,
-          value: JSON.stringify(newData)
-        })
-      }).fail(function(x) {
-        console.error(x.responseText);
-      });
-    }
 
 
     var page = getPage();
@@ -281,21 +775,49 @@
           });
         });
       }
+      if (firstTimeUserExperience[page] == true) {
+        seenFtue = true;
+      }
+      getSegmentationData();
     }
 
-    getImplementationData(){
-      $.ajaz({
+    function getSegmentationData() {
+      $.ajax({
         type: 'GET',
-        url: '/DesktopModules/UserStore/API/Personalization/Get?key=implementationData',
+        url: '/DesktopModules/UserStore/API/Personalization/Get?key=segmentationData',
         cache: false
-      }).fail(function(x){
+      }).fail(function(x) {
+        setPersonalizationData('segmentationData', {
+          'completed-survey': false
+        })
+        getSegmentationData();
         console.error(x);
-      }).done(function(data){
-        try{
+      }).done(function(data) {
+        try {
           var json = JSON.parse(data);
-          implementationData = json;
+          segmentationData = json['completed-survey']
 
-        } catch(ex){}
+
+
+
+
+
+          // TODO: make this testable on Prod without triggering the ftue modal again for everyone
+
+
+
+
+
+
+
+          // console.log('segmentationData: ', segmentationData);
+          // console.log('seenFtue: ', seenFtue);
+          if (segmentationData == false && seenFtue == true) {
+            setTimeout(function() {
+              $('#modal-implementation').modal('toggle');
+            }, 500);
+          }
+        } catch (ex) {}
       });
     }
 
@@ -317,9 +839,167 @@
         action: 'click'
       });
     });
+
+
+
+    // segmentation survey js
+    var questions = [];
+
+    function updateSelectText(element, idx) {
+      element.closest('li').find('.select-text').text(questions[idx]['text'] + ' ' + questions[idx]['checkboxes']['other-explanation']);
+    }
+
+    $('#modal-implementation form').each(function(idx) {
+      $(this).closest('li').attr('data-form-number', idx);
+      questions[idx] = {};
+    });
+
+    $('#modal-implementation form').on('change', function() {
+      var $this = $(this);
+      var index = $(this).closest('li').attr('data-form-number');
+      var checkboxes = {};
+      $this.find('input[type="checkbox"]').each(function() {
+        checkboxes[$(this).attr('value')] = $(this).is(':checked');
+      });
+      questions[index]['checkboxes'] = checkboxes;
+      var text = '';
+
+      for (prop in checkboxes) {
+        if (checkboxes[prop] == true) {
+          text.length == 0 ? text = text + prop : text = text + '; ' + prop;
+        }
+      }
+      if (!$this.find('input[name="other"]').is(':checked')) {
+        $(this).closest('li').find('.sub-question input').val('');
+      }
+      checkboxes['other-explanation'] = $this.closest('li').find('.sub-question input').val();
+      if (text == '') text = 'Select all that apply';
+      questions[index]['text'] = text;
+      $this.closest('li').find('.question').removeClass('validate');
+      $this.closest('li').find('.validate-message').addClass('hidden');
+      updateSelectText($this, index);
+    });
+    $('#modal-implementation .sub-question input').on('input', function() {
+      var $this = $(this);
+      var index = $this.closest('li').attr('data-form-number');
+      questions[index]['checkboxes']['other-explanation'] = $(this).val();
+      updateSelectText($this, index);
+      $this.closest('li').find('.question').removeClass('validate');
+      $this.closest('li').find('.validate-message-other').addClass('hidden');
+
+      if ($this.val() == '') {
+        $this.closest('.sub-question').find('.question').addClass('validate');
+        $this.closest('.sub-question').find('.validate-message-other').removeClass('hidden');
+        $this.closest('.sub-question').find('.validate-message-other span').text('This field is required.');
+      }
+    });
+
+    $('#modal-implementation .button-submit').on('click', function(e) {
+      e.preventDefault();
+      handleValidation();
+    });
+
+    function handleValidation() {
+      var noValidations = true;
+      questions.forEach(function(question, idx) {
+        var checks = Object.keys(question);
+        var message = '';
+        var checked = false;
+        for (prop in question['checkboxes']) {
+          if (question['checkboxes'][prop] == true) {
+            var checked = true;
+          }
+        }
+        if (checked == false || checks.length == 0) {
+          $('#modal-implementation li[data-form-number="' + idx + '"] .question').addClass('validate');
+          $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message').removeClass('hidden');
+          $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message span').text('Please select at least one option.');
+          noValidations = false;
+        } else {
+          $('#modal-implementation li[data-form-number="' + idx + '"] .question').removeClass('validate');
+          $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message').addClass('hidden');
+        }
+
+        var otherChecked = $('#modal-implementation li[data-form-number="' + idx + '"] input[name="other"]').is(':checked');
+        var otherExplanation = $('#modal-implementation li[data-form-number="' + idx + '"] .sub-question input').val() == '';
+        if (otherChecked == true && otherExplanation == true) {
+          $('#modal-implementation li[data-form-number="' + idx + '"] .sub-question .question').addClass('validate');
+          $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message-other').removeClass('hidden');
+          $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message-other span').text('This field is required.');
+          noValidations = false;
+        } else {
+          $('#modal-implementation li[data-form-number="' + idx + '"] .sub-question .question').removeClass('validate');
+          $('#modal-implementation li[data-form-number="' + idx + '"] .validate-message-other').addClass('hidden');
+        }
+      });
+
+      if (noValidations == true) submit();
+      // if(noValidations == true || $('#modal-implementation .dont-ask input').is(':checked')) submit();
+
+    }
+
+    function sendData() {
+      questions.forEach(function(question, idx) {
+        for (prop in question['checkboxes']) {
+          if (question['checkboxes'][prop] == true) {
+            if (prop == 'Other:') {
+              window.__CFCMETRICS__ && window.__CFCMETRICS__.send('segmentation_survey', {
+                'question_num': idx + 1,
+                'response': prop + ' ' + question['checkboxes']['other-explanation']
+              });
+              // console.log({
+              //   'question_num': idx + 1,
+              //   'response': prop + ' ' + question['checkboxes']['other-explanation']
+              // });
+            } else {
+              window.__CFCMETRICS__ && window.__CFCMETRICS__.send('segmentation_survey', {
+                'question_num': idx + 1,
+                'response': prop
+              });
+              // console.log({
+              //   'question_num': idx + 1,
+              //   'response': prop
+              // });
+            }
+          }
+        }
+      });
+    }
+
+    function submit() {
+      $('#modal-implementation .modal-form, .modal-thank-you').toggleClass('hidden');
+      sendData();
+      setPersonalizationData('segmentationData', {
+        'completed-survey': true
+      })
+    }
+
+    $('#modal-implementation input[type="checkbox"]').on('focus', function() {
+      $(this).parent().css({
+        'background-color': 'rgba(155, 155, 155, 0.1)'
+      });
+    }).on('focusout', function() {
+      $(this).parent().css({
+        'background-color': ''
+      });
+    });
+
+    $('#modal-implementation .button-cancel, .button-ok').on('click', function() {
+      $('#modal-implementation').modal('toggle');
+    })
+
+    $('#modal-implementation .question input[type="checkbox"]').on('change', function() {
+      $(this).closest('label').toggleClass('highlighted');
+    })
+    $('#modal-implementation .question input[type="checkbox"][name="other"]').on('change', function() {
+      $(this).closest('li').find('.sub-question').toggleClass('hidden');
+    })
+
+    $('#modal-implementation .question').find('.collapse').on('shown.bs.collapse', function() {
+      $(this).parent().find('.ms-caret').addClass('ms-caret-up').removeClass('ms-caret')
+    }).on('hidden.bs.collapse', function() {
+      $(this).parent().find('.ms-caret-up').addClass('ms-caret').removeClass('ms-caret-up')
+    })
   });
+  //end segmentation survey js
 </script>
-
-
-
-{\"category\":\"program_training\",\"subcategory\":\"landing\",\"page\":\"landing\"}"}
