@@ -674,8 +674,7 @@
   $(document).ready(function() {
     var metricsType = 'ui_interaction';
     var metricsCat = 'new_user_modal';
-
-    var firstTimeUserExperience, segmentationData, seenFtue;
+    var firstTimeUserExperience, segmentationData, segmentationReady, seenFtue;
 
     function setPersonalizationData(key, newData) {
       $.ajax({
@@ -730,7 +729,6 @@
         firstTimeUserExperience[page] = false;
       }
       if (firstTimeUserExperience[page] == false) {
-        // if (localStorage.getItem(page + '-introduction') == null) {
         if (page == 'middle-school') {
           var videoId = '117b74ac8ed44296a11859a98b40d6ad';
         } else {
@@ -746,7 +744,6 @@
           $('.modal.fade.in').on('hide.bs.modal', function() {
             firstTimeUserExperience[page] = true;
             setPersonalizationData('ftueData', firstTimeUserExperience);
-            // localStorage.setItem(page + '-introduction', 'visited');
           });
         }, 500);
         $('.modal-introduction').on('show.bs.modal', function() {
@@ -778,7 +775,9 @@
       if (firstTimeUserExperience[page] == true) {
         seenFtue = true;
       }
-      getSegmentationData();
+      if (checkDate() == true){
+        getSegmentationData();
+      }
     }
 
     function getSegmentationData() {
@@ -796,22 +795,6 @@
         try {
           var json = JSON.parse(data);
           segmentationData = json['completed-survey']
-
-
-
-
-
-
-          // TODO: make this testable on Prod without triggering the ftue modal again for everyone
-
-
-
-
-
-
-
-          // console.log('segmentationData: ', segmentationData);
-          // console.log('seenFtue: ', seenFtue);
           if (segmentationData == false && seenFtue == true) {
             setTimeout(function() {
               $('#modal-implementation').modal('toggle');
@@ -907,7 +890,7 @@
         var checked = false;
         for (prop in question['checkboxes']) {
           if (question['checkboxes'][prop] == true) {
-            var checked = true;
+            checked = true;
           }
         }
         if (checked == false || checks.length == 0) {
@@ -947,19 +930,11 @@
                 'question_num': idx + 1,
                 'response': prop + ' ' + question['checkboxes']['other-explanation']
               });
-              // console.log({
-              //   'question_num': idx + 1,
-              //   'response': prop + ' ' + question['checkboxes']['other-explanation']
-              // });
             } else {
               window.__CFCMETRICS__ && window.__CFCMETRICS__.send('segmentation_survey', {
                 'question_num': idx + 1,
                 'response': prop
               });
-              // console.log({
-              //   'question_num': idx + 1,
-              //   'response': prop
-              // });
             }
           }
         }
@@ -967,12 +942,30 @@
     }
 
     function submit() {
-      $('#modal-implementation .modal-form, .modal-thank-you').toggleClass('hidden');
+      $('#modal-implementation .modal-form, #modal-implementation .modal-thank-you').toggleClass('hidden');
       sendData();
       setPersonalizationData('segmentationData', {
         'completed-survey': true
       })
     }
+
+function checkDate(){
+  var now = new Date();
+  var startDate = new Date(2019, 6, 1)
+  if (now < startDate){
+    return false;
+  } else{
+    return true;
+  }
+}
+
+
+// on close modal, set survey to true
+    // $('#modal-implementation').on('hide.bs.modal', function() {
+    //   setPersonalizationData('segmentationData', {
+    //     'completed-survey': true
+    //   })
+    // })
 
     $('#modal-implementation input[type="checkbox"]').on('focus', function() {
       $(this).parent().css({
@@ -984,7 +977,7 @@
       });
     });
 
-    $('#modal-implementation .button-cancel, .button-ok').on('click', function() {
+    $('#modal-implementation .button-cancel, #modal-implementation .button-ok').on('click', function() {
       $('#modal-implementation').modal('toggle');
     })
 

@@ -2,7 +2,7 @@ from contentful_management import Client
 client = Client('CFPAT-b9d0bb66831b4cee396847c0467eace39cd05611526064d7079b3e57653928d6')
 
 import os, binascii, json
-with open('test-output.json') as f:
+with open('test-output2.json') as f:
     data = json.load(f)
 
 for val in data:
