@@ -137,7 +137,7 @@
     width: 90%;
     margin: 0 auto;
   }
-  #modal-implementation.ms .modal-form.hidden, #modal-implementation.ms .modal-thank-you.hidden{
+  #modal-implementation.ms .modal-form.hidden, #modal-implementation.ms .modal-thank-you.hidden, #modal-implementation.ms .modal-dont-ask.hidden{
     display:none;
   }
   #modal-implementation.ms .modal-header{
@@ -298,16 +298,14 @@
     height: 100%;
   }
   #modal-implementation.ms .dont-ask input[type=checkbox] + span:before{
-    top: 2px;
     font-size: 16px;
     letter-spacing: 5px;
   }
 
   #modal-implementation.ms .dont-ask input[type=checkbox]:checked + span:before{
-    top: 2px;
     font-size: 16px;
     letter-spacing: 4px;
-    color: #4DA8EF;
+    color: #308CE9;
   }
 
   #modal-implementation.ms .dont-ask input[type=checkbox]:indeterminate + span:before{
@@ -327,7 +325,7 @@
     position: relative;
     font-family: 'proxima_nova_rgregular';
   }
-  #modal-implementation.ms label:hover{
+  #modal-implementation.ms .question label:hover{
     background-color: #FBFCFE;
   }
   /* #modal-implementation.ms .collapse label:focus-within{
@@ -431,11 +429,11 @@
   #modal-implementation.ms .intro p{
     font-size: 18px;
   }
-  #modal-implementation.ms .modal-thank-you .modal-body{
+  #modal-implementation.ms .modal-thank-you .modal-body, #modal-implementation.ms .modal-dont-ask .modal-body{
     width: 92%;
     margin: 0 auto;
   }
-  #modal-implementation.ms .modal-thank-you .close{
+  #modal-implementation.ms .modal-thank-you .close, #modal-implementation.ms .modal-dont-ask .close{
     color: #308CE9;
     position: relative;
     top: 25px;
@@ -445,7 +443,7 @@
     font-size: 24px;
   }
 
-  #modal-implementation.ms .modal-thank-you .close:hover{
+  #modal-implementation.ms .modal-thank-you .close:hover, #modal-implementation.ms .modal-dont-ask .close:hover{
     color: #D2E8FF;
   }
 
@@ -455,7 +453,7 @@
     margin-top: 15px;
     margin-bottom: 35px;
   }
-  #modal-implementation.ms .modal-thank-you h2{
+  #modal-implementation.ms .modal-thank-you h2, #modal-implementation.ms .modal-dont-ask h2{
     font-size: 44px;
     line-height: 23px;
     font-weight: 400;
@@ -642,12 +640,12 @@
           </li>
         </ol>
         <div class="button-container">
-          <!-- <div class="dont-ask text-left">
+          <div class="dont-ask text-left">
             <label for="dont-ask-me-again">
               <input type="checkbox" name="dont-ask-me-again" value="Don't ask me again">
               <span>Don't ask me again</span>
             </label>
-          </div> -->
+          </div>
           <a class="button-cancel" href="#">Cancel</a>
           <a class="button-submit" href="#">Submit</a>
         </div>
@@ -666,6 +664,20 @@
         <a class="button-ok text-center" href="#">Ok</a>
       </div>
     </div>
+
+    <div class="modal-dont-ask hidden">
+      <a href="#" class="close pull-right" data-dismiss="modal">
+        <i class="glyphicon glyphicon-remove"></i>
+      </a>
+      <div class="modal-body">
+        <div class="intro text-center  col-sm-10 col-sm-offset-1">
+          <figure class="completed fa fa-check-circle"></figure>
+          <h2>You got it!</h2>
+          <p>We won't ask you these questions again.</p>
+        </div>
+        <a class="button-ok text-center" href="#">Ok</a>
+      </div>
+    </div>
   </div>
 </div>
 <!-- end segmentation survey html -->
@@ -674,7 +686,7 @@
   $(document).ready(function() {
     var metricsType = 'ui_interaction';
     var metricsCat = 'new_user_modal';
-    var firstTimeUserExperience, segmentationData, segmentationReady, seenFtue;
+    var firstTimeUserExperience, segmentationData, segmentationReady, seenFtue, dontAsk;
 
     function setPersonalizationData(key, newData) {
       $.ajax({
@@ -775,19 +787,19 @@
       if (firstTimeUserExperience[page] == true) {
         seenFtue = true;
       }
-      if (checkDate() == true){
+      // if (checkDate() == true){
         getSegmentationData();
-      }
+      // }
     }
 
     function getSegmentationData() {
       $.ajax({
         type: 'GET',
-        url: '/DesktopModules/UserStore/API/Personalization/Get?key=segmentationData',
+        url: '/DesktopModules/UserStore/API/Personalization/Get?key=testSegmentationData',
         cache: false
       }).fail(function(x) {
-        setPersonalizationData('segmentationData', {
-          'completed-survey': false
+        setPersonalizationData('testSegmentationData', {
+          'completed-survey': true
         })
         getSegmentationData();
         console.error(x);
@@ -916,8 +928,9 @@
         }
       });
 
-      if (noValidations == true) submit();
-      // if(noValidations == true || $('#modal-implementation .dont-ask input').is(':checked')) submit();
+      // if (noValidations == true) submit();
+      if($('#modal-implementation .dont-ask input').is(':checked')) dontAsk = true;
+      if(noValidations == true || dontAsk == true) submit();
 
     }
 
@@ -942,9 +955,10 @@
     }
 
     function submit() {
-      $('#modal-implementation .modal-form, #modal-implementation .modal-thank-you').toggleClass('hidden');
+      $('#modal-implementation .modal-form').toggleClass('hidden');
+      dontAsk == true ? $('#modal-implementation .modal-dont-ask').toggleClass('hidden') : $('#modal-implementation .modal-thank-you').toggleClass('hidden')
       sendData();
-      setPersonalizationData('segmentationData', {
+      setPersonalizationData('testSegmentationData', {
         'completed-survey': true
       })
     }
@@ -967,7 +981,7 @@ function checkDate(){
     //   })
     // })
 
-    $('#modal-implementation input[type="checkbox"]').on('focus', function() {
+    $('#modal-implementation .question input[type="checkbox"]').on('focus', function() {
       $(this).parent().css({
         'background-color': 'rgba(155, 155, 155, 0.1)'
       });
