@@ -153,10 +153,12 @@
     margin-bottom: 0;
     font-family: 'proxima_nova_ltsemibold';
     font-size: 30px;
+    padding-right: 40px;
   }
-  #modal-implementation.ms .modal-header span{
-    font-size: 22px;
+  #modal-implementation.ms .modal-header h2 span{
+    font-size: 23px;
     line-height: 32px;
+    font-family: 'proxima_nova_rgregular';
   }
   #modal-implementation.ms .modal-header .close{
     opacity: 1;
@@ -520,11 +522,11 @@
     </div>
   </div>
 </div>
+<!-- end program overview introduction modal -->
 
 
 
 <!-- segmentation survey html -->
-<!-- program overview introduction modal -->
 <div class="ms modal fade ms-modal" id="modal-implementation" tabindex="-1">
 
   <!-- dnn fix -->
@@ -537,11 +539,11 @@
         <a href="#" class="close pull-right" data-dismiss="modal">
           <i class="glyphicon glyphicon-remove"></i>
         </a>
-        <h2>Can you help us out?&nbsp;</h2>
-        <span>We'd like to learn about how your school implements Second Step.</span>
+        <h2>Can you help us out?&nbsp;
+          <span>We’d like to learn about how your school implements Second Step.</span>
+        </h2>
       </div>
       <div class="modal-body">
-        <!-- <i class="glyphicon glyphicon-check-square">test</i> -->
         <ol>
           <li>
             <p class="prompt">When are Second Step lessons taught at your school?</p>
@@ -558,7 +560,7 @@
                   </label>
                   <label for="core-subject-matter-class">
                     <input type="checkbox" name="core-subject-matter-class" value="Core subject-matter class">
-                    <span>Core subject-matter class (e.g., English, math or social studies)</span>
+                    <span>Core subject-matter class (e.g., English, math, or social studies)</span>
                   </label>
                   <label for="health-class">
                     <input type="checkbox" name="health-class" value="Health class">
@@ -642,8 +644,8 @@
         <div class="button-container">
           <div class="dont-ask text-left">
             <label for="dont-ask-me-again">
-              <input type="checkbox" name="dont-ask-me-again" value="Don't ask me again">
-              <span>Don't ask me again</span>
+              <input type="checkbox" name="dont-ask-me-again" value="Don’t ask me again">
+              <span>Don’t ask me again</span>
             </label>
           </div>
           <a class="button-cancel" href="#">Cancel</a>
@@ -659,9 +661,9 @@
         <div class="intro text-center  col-sm-10 col-sm-offset-1">
           <figure class="completed fa fa-check-circle"></figure>
           <h2>Thank you!</h2>
-          <p>Your feedback is important and ensures Second Step users get the support they need.</p>
+          <p>Your feedback is important and helps ensures that Second Step users get the support they need.</p>
         </div>
-        <a class="button-ok text-center" href="#">Ok</a>
+        <a class="button-ok text-center" href="#">Close</a>
       </div>
     </div>
 
@@ -672,10 +674,9 @@
       <div class="modal-body">
         <div class="intro text-center  col-sm-10 col-sm-offset-1">
           <figure class="completed fa fa-check-circle"></figure>
-          <h2>You got it!</h2>
-          <p>We won't ask you these questions again.</p>
+          <p>Okay! We won’t ask you again.</p>
         </div>
-        <a class="button-ok text-center" href="#">Ok</a>
+        <a class="button-ok text-center" href="#">Close</a>
       </div>
     </div>
   </div>
