@@ -3,9 +3,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
+# from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import collections, json, re, time, os, binascii, tomd
+
+with open('metadata.json') as f:
+    page_metadata = json.load(f)
 
 client = Client('CFPAT-b9d0bb66831b4cee396847c0467eace39cd05611526064d7079b3e57653928d6')
 space_id = 'wjuty07n9kzp'
@@ -48,11 +51,10 @@ def uploadResource(file, file_path, asset_id, title, resource_type):
             }
         }
     })
-    # print('asset: ', asset)
     asset.process()
 
+# find pdfs and upload to contentful as assets
 def findPdfs(containing_class, pdf_array):
-    # find pdfs and upload to contentful as assets
     pdf_links = driver.find_elements_by_xpath('//div[contains(@class, ' + containing_class + ')]//a[contains(@href, ".pdf")]')
     for pdf_link_idx, pdf_link in enumerate(pdf_links):
         new_pdf = {}
@@ -63,6 +65,10 @@ def findPdfs(containing_class, pdf_array):
         uploadResource(new_pdf['file_name'], pdf_link.get_attribute('href'), new_pdf['id'], new_pdf['title'], 'application/pdf')
 
 
+def pairMetadata(matcher):
+    for metadata_idx, metadata in enumerate(page_metadata):
+        if metadata['title'] == matcher:
+            return metadata_idx
 
 
 def scrape_content():
@@ -74,13 +80,22 @@ def scrape_content():
     main_page['pageContentMarkdown'] = {}
     main_page['pageContentMarkdown']['en-US'] = tomd.convert(str(content)).strip()
 
+    index = pairMetadata(main_page['title']['en-US'])
+    main_page['product'] = {}
+    # print('index: ', index)
+    # print('page_metadata[index]: ', page_metadata[index])
+    main_page['product']['en-US'] = page_metadata[index]['product']
+    main_page['audience'] = {}
+    main_page['audience']['en-US'] = page_metadata[index]['audience']
+    main_page['gradeRange'] = {}
+    main_page['gradeRange']['en-US'] = page_metadata[index]['gradeRange']
+
+
     main_page_pdfs = []
     findPdfs('mainbox', main_page_pdfs)
     time.sleep(1)
     for pdf_idx, pdf in enumerate(main_page_pdfs):
-        print('pdf: ', pdf)
         asset = client.assets(space_id, environment_id).find(pdf['id'])
-        print('asset: ', asset)
 
     links = driver.find_elements_by_xpath('//div[contains(@class, "mainbox")]//li//a')
     length = len(links)
@@ -104,10 +119,20 @@ def scrape_content():
         new_page['pageContentMarkdown'] = {}
         new_page['pageContentMarkdown']['en-US'] = new_content
 
+        index = pairMetadata(new_page['title']['en-US'])
+        new_page['product'] = {}
+        new_page['product']['en-US'] = page_metadata[index]['product']
+        new_page['audience'] = {}
+        new_page['audience']['en-US'] = page_metadata[index]['audience']
+        new_page['gradeRange'] = {}
+        new_page['gradeRange']['en-US'] = page_metadata[index]['gradeRange']
+
+
         new_page_pdfs = []
         findPdfs('LeftTwoThirdsPane', new_page_pdfs)
 
         new_id = binascii.b2a_hex(os.urandom(11))
+        print('new_page: ', new_page)
         publishContent(new_page, new_id)
         entry_ids.append(new_id)
 
