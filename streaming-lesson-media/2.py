@@ -45,13 +45,11 @@ def checkForNextImage(selenium_driver, media_array):
         EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//img[@class="fancybox-image"]'))
     )
     image_src = img.get_attribute('src')
-    image_type = 'image/' + image_src.split('.')[-1]
-    image_alt = img.get_attribute('alt')
     if img != '':
         media_title = selenium_driver.find_element_by_xpath('//div[contains(@class, "fancybox-opened")]//div[contains(@class, "fancybox-title")]').text
     else:
         media_title = ''
-    media_array.append({'type': image_type, 'image-src': image_src, 'media-title': media_title, 'image-alt': image_alt})
+    media_array.append({'type': 'image', 'image-src': image_src, 'image-title': media_title})
     try:
         if check_exists_by_xpath(driver, '//a[contains(@class, "fancybox-next")]') == True:
             driver.find_element_by_xpath('//a[contains(@class, "fancybox-next")]').click()
@@ -107,14 +105,14 @@ def openModals(bs, page):
                 img = WebDriverWait(driver, 1).until(
                     EC.presence_of_element_located((By.XPATH, '//div[contains(@class, "fancybox-opened")]//img[@class="fancybox-image"]'))
                 )
-                image_src = img.get_attribute('src')
-                image_type = 'image/' + image_src.split('.')[-1]
-                image_alt = img.get_attribute('alt')
                 if check_exists_by_xpath(driver, '//a[contains(@class, "fancybox-next")]') == True:
                     checkForNextImage(driver, medias)
                     multiple_media = True
                 else:
-                    media = {'type': image_type, 'image-src': image_src, 'media-title': img.text, 'image-alt': image_alt}
+                    media = {
+                        'type': 'image',
+                        'image-src': img.get_attribute('src')
+                    }
 
             except: # look instead for video
                 if multiple_media == True:
@@ -128,8 +126,8 @@ def openModals(bs, page):
                         media_poster = element.get_attribute('style').split('url("')[1].split('");')[0]
                         media = {
                             'type': 'video',
-                            'media-id': media_id,
-                            'media-poster': media_poster
+                            'limelight-id': media_id,
+                            'video-poster': media_poster
                         }
                     else:
                         media = ' '
@@ -151,9 +149,10 @@ def openModals(bs, page):
     data = {}
     counter = 0
     for materials_idx, materials in enumerate(lesson_materials_all):
-        data[materials['language']] = {}
-        items = {}
-        items['categories'] = [{}] * len(materials['content'])
+        currentLanguage = materials['language']
+        if currentLanguage == 'english':
+            items = {}
+            items['categories'] = [{}] * len(materials['content'])
         # items['categories'] = {}
         for item_idx, item in enumerate(materials['content']):
             buttons = []
@@ -172,27 +171,41 @@ def openModals(bs, page):
                 if hasattr(button_title, 'text'):
                     button_title = button_title.text.strip()
                     thumbnail_img = button.find('img')['src']
-                    thumbnail_alt = button.find('img')['alt']
-                    thumbnail_type = 'image/' + thumbnail_img.split('/')[-1]
                 else:
                     button_title = button['title']
                     thumbnail_img = ' '
-                    thumbnail_alt = ' '
                 button_title = re.sub(' +', ' ', button_title.replace('\n', ' '))
-                new_button = {
-                    'media-resource-title': button_title,
-                    'thumbnail-image-src': thumbnail_img,
-                    'thumbnail-image-alt': thumbnail_alt,
-                    'thumbnail-type': thumbnail_type,
-                    'modal-media': buttons_modals[counter]
-                }
-                new_material.append(new_button)
+                if currentLanguage == 'english':
+                    if isinstance(buttons_modals[counter], list):
+                        print('english in list')
+                        media = {
+                            'media-resource-title': {'en-US': button_title},
+                            'thumbnail-image-src': {'en-US': thumbnail_img},
+                            'images': {'en-US': buttons_modals[counter]}
+                        }
+                        new_material.append(media)
+                    else:
+                        print('english in dict')
+                        buttons_modals[counter]['media-resource-title'] = {'en-US': button_title }
+                        buttons_modals[counter]['thumbnail-image-src'] = {'en-US': thumbnail_img }
+                        new_material.append(buttons_modals[counter])
+                else:
+                    if isinstance(buttons_modals[counter], list):
+                        print('spanish in list')
+                        print('items[categories][0][media-resource]: ', items['categories'][0]['media-resource'])
+                        items['categories'][0]['media-resource'][0]['media-resource-title']['es-US'] = button_title
+                        items['categories'][0]['media-resource'][0]['images']['es-US'] = buttons_modals[counter]
+                        items['categories'][0]['media-resource'][0]['thumbnail-image-src']['es-US'] = thumbnail_img
+                    else:
+                        print('spanish in dict')
+                        print('items[categories]: ', items['categories'])
+                        items['categories'][0]['media-resource'][0]['media-resource-title']['es-US'] = button_title
+                        items['categories'][0]['media-resource'][0]['thumbnail-image-src']['es-US'] = thumbnail_img
                 counter += 1
             items['categories'][item_idx] = { 'category-title': heading, 'media-resource': new_material }
-        data[materials['language']] = items
-    pages.append({'page': page, 'content': data})
+        data = items
+    pages.append({page: data})
 
-    # [materials['language']]
 
 def scrape_content(name_of_page):
     soup = BeautifulSoup(driver.page_source.encode('utf-8'), 'html.parser')

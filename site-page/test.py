@@ -1,10 +1,6 @@
-a = {}
+a = {'a': 'apple', 'b': 'banana'}
+index = a['c']
+if index < 0:
+    index = 0
 
-a['b'] = {}
-a['c'] = {}
-a['d'] = {}
-a['b']['en-US'] = 'banana'
-a['c']['en-US'] = 'carrot'
-a['d']['en-US'] = 'daikon'
-
-print(a)
+print(index)

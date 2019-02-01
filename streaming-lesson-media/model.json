@@ -1,0 +1,29 @@
+{
+  "title": "lesson-title",
+  "categories": {
+    "en-US": {
+        "title": "category-title",
+        "items":[{
+          "item-title": "Photo 8A",
+          "modal-media": "http://www.secondstep.org/Portals/0/EL_img/media/lesson-photos/EL_L8A_More_Feelings.jpg",
+          "thumbnail-image-src": "/Portals/0/EL_img/media/el-lesson08a-150px.jpg"
+        }]
+      },
+      "es-US": {
+        "title": "spanish-category-title",
+        "items": [{
+          "item-title": "Foto 8A",
+          "modal-media": "http://www.secondstep.org/Portals/0/EL_img/media/lesson-photos/EL_L8A_More_Feelings.jpg",
+          "thumbnail-image-src": "/Portals/0/EL_img/media/el-lesson08a-150px.jpg"
+        }, {
+          "item-title": "Foto 8B",
+          "modal-media": "http://www.secondstep.org/Portals/0/EL_img/media/lesson-photos/EL_L8B_More_Feelings.jpg",
+          "thumbnail-image-src": "/Portals/0/EL_img/media/el-lesson08b-150px.jpg"
+        }, {
+          "item-title": "PISTA 11Si estás feliz y lo sabes, Estrofas: miedo/asustado (0:31)",
+          "modal-media": "74b5bcd316184fb3b470a7152dcb7ca8",
+          "thumbnail-image-src": "/Portals/0/EL_img/media/song-el-150px.png"
+        }]
+      }
+  }
+}

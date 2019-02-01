@@ -3,12 +3,12 @@ from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-# from selenium.webdriver.common.keys import Keys
 from bs4 import BeautifulSoup
 import collections, json, re, time, os, binascii, tomd
 
+all_media = []
 with open('metadata.json') as f:
-    page_metadata = json.load(f)
+    excel_metadata = json.load(f)
 
 client = Client('CFPAT-b9d0bb66831b4cee396847c0467eace39cd05611526064d7079b3e57653928d6')
 space_id = 'wjuty07n9kzp'
@@ -16,10 +16,11 @@ environment_id = 'master'
 
 driver = webdriver.Firefox()
 
-URL = 'http://www.secondstep.org/Early-Learning/Program-Coordinators/Second-Step-Kit/Evaluation-Guide'
+URL = 'http://www.secondstep.org/Kindergarten/Program-Coordinators/Second-Step-Kit/Evaluation-Guide'
 LOGIN_URL = 'http://login.secondstep.org/account/login'
 USERNAME = 'mfahmy@cfchildren.org'
 PASSWORD = 'forthechildren'
+
 
 def site_login():
     driver.get(LOGIN_URL)
@@ -28,136 +29,199 @@ def site_login():
     driver.find_element_by_class_name('login-bt').click()
 
 
-def publishContent(fields, entry_id):
-    client = Client('CFPAT-b9d0bb66831b4cee396847c0467eace39cd05611526064d7079b3e57653928d6')
-    entry = client.entries(space_id, environment_id).create(entry_id, {
-        'content_type_id': 'sitePage',
-        'fields': fields
+def createEntry(content):
+    entry = client.entries(space_id, environment_id).create(content['id'], {
+        'content_type_id': content['content_type'],
+        'fields': content['fields']
     })
     # entry.publish()
 
-def uploadResource(file, file_path, asset_id, title, resource_type):
-    asset = client.assets(space_id, environment_id).create(asset_id, {
+
+def uploadMedia(content, asset_array):
+    asset = client.assets(space_id, environment_id).create(content['id'], {
         'fields': {
             'title': {
-                'en-US': title
+                'en-US': content['file_name']
+            },
+            'description': {
+                'en-US': content['description']
             },
             'file': {
                 'en-US': {
-                    'contentType': resource_type,
-                    'fileName': file,
-                    'upload': file_path
+                    'contentType': content['content_type'],
+                    'fileName': content['file_name'],
+                    'upload': content['file_path']
                 }
             }
         }
     })
     asset.process()
-
-# find pdfs and upload to contentful as assets
-def findPdfs(containing_class, pdf_array):
-    pdf_links = driver.find_elements_by_xpath('//div[contains(@class, ' + containing_class + ')]//a[contains(@href, ".pdf")]')
-    for pdf_link_idx, pdf_link in enumerate(pdf_links):
-        new_pdf = {}
-        new_pdf['file_name'] = pdf_link.get_attribute('href').split('/')[-1]
-        new_pdf['title'] = pdf_link.text
-        new_pdf['id'] = binascii.b2a_hex(os.urandom(11))
-        pdf_array.append(new_pdf)
-        uploadResource(new_pdf['file_name'], pdf_link.get_attribute('href'), new_pdf['id'], new_pdf['title'], 'application/pdf')
+    asset_array.append(content['id'])
 
 
-def pairMetadata(matcher):
-    for metadata_idx, metadata in enumerate(page_metadata):
-        if metadata['title'] == matcher:
+def publishAsset(id):
+    processed_asset = client.assets(space_id, environment_id).find(id)
+    processed_asset.publish()
+
+
+def createPdfEntry(pdf):
+    fields = {
+        'title': {
+            'en-US': pdf['fileName']
+        },
+        'descriptionMarkdown': {
+            'en-US': pdf['title']
+        },
+        'file': {
+            'en-US': {
+                'sys': {
+                    'type': 'Link',
+                    'linkType': 'Asset',
+                    'id': pdf['asset_id']
+                }
+            }
+        },
+        'product': {
+            'en-US': pdf['product']
+        },
+        'gradeRange': {
+            'en-US': pdf['gradeRange']
+        },
+        'resourceLibrary': {
+            'en-US': pdf['resourceLibrary']
+        },
+        'audience': {
+            'en-US': pdf['audience']
+        },
+        'writeable': {
+            'en-US': pdf['writeable']
+        }
+    }
+    entry = client.entries(space_id, environment_id).create(pdf['id'], {
+        'content_type_id': 'pdf',
+        'fields': fields
+    })
+    # entry.publish()
+
+
+def pairMetadata(given, to_match, type):
+    for metadata_idx, metadata in enumerate(excel_metadata[type]):
+        if metadata[to_match] == given:
             return metadata_idx
 
 
+# find pdfs and upload to contentful as assets, and create entries from those assets
+def findPdfs(containing_class, pdf_array):
+    pdf_links = driver.find_elements_by_xpath('//div[contains(@class, "' + containing_class + '")]//a[contains(@href, ".pdf")]')
+    for pdf_link_idx, pdf_link in enumerate(pdf_links):
+        new_pdf_asset = {
+            'file_name': pdf_link.get_attribute('href').split('/')[-1],
+            'file_path': pdf_link.get_attribute('href'),
+            'id': binascii.b2a_hex(os.urandom(11)),
+            'description': pdf_link.text,
+            'content_type': 'application/pdf'
+        }
+        uploadMedia(new_pdf_asset, all_media)
+        new_pdf_entry = {
+            'title': new_pdf_asset['file_name'],
+            'id': binascii.b2a_hex(os.urandom(11)),
+            'asset_id': new_pdf_asset['id']
+        }
+        # add metadata from excel spreadsheet to pdf
+        index = pairMetadata(new_pdf_asset['file_name'], 'fileName', 'pdf')
+        pdf_exists = True
+        if index is None:
+            pdf_exists = False
+            index = 0
+        pdf_metadata = excel_metadata['pdf'][index]
+        for key in pdf_metadata:
+            new_pdf_entry[key] = pdf_metadata[key]
+        if pdf_exists == False:
+            new_pdf_entry['title'] = new_pdf_asset['description']
+            new_pdf_entry['fileName'] = new_pdf_asset['file_name']
+        pdf_array.append(new_pdf_entry)
+        createPdfEntry(new_pdf_entry)
+
+
 def scrape_content():
-    main_page = {}
     soup = BeautifulSoup(driver.page_source.encode('utf-8'), 'html.parser')
-    main_page['title'] = {}
-    main_page['title']['en-US'] = soup.find('h1').text.strip()
-    content = soup.find('div', attrs={'class': 'mainbox'})
-    main_page['pageContentMarkdown'] = {}
-    main_page['pageContentMarkdown']['en-US'] = tomd.convert(str(content)).strip()
+    title = str(soup.find('h1').text).strip()
+    content = soup.find('div', attrs={'class': 'cmt-two-third-pane'})
+    index = pairMetadata(title, 'title', 'page')
+    page_metadata = excel_metadata['page'][index]
+    main_page = {
+        'fields': {
+            'title': { 'en-US': title },
+            'pageContentMarkdown': { 'en-US': tomd.convert(str(content)).strip() },
+            'product': { 'en-US': page_metadata['product'] },
+            'audience': { 'en-US': page_metadata['audience'] },
+            'gradeRange': { 'en-US': page_metadata['gradeRange'] },
+            'internalLinks': { 'en-US': []},
+            'pdf': { 'en-US': [] }
+        },
+        'id': binascii.b2a_hex(os.urandom(11)),
+        'content_type': 'sitePage',
+        'pdf_array': []
+    }
 
-    index = pairMetadata(main_page['title']['en-US'])
-    main_page['product'] = {}
-    # print('index: ', index)
-    # print('page_metadata[index]: ', page_metadata[index])
-    main_page['product']['en-US'] = page_metadata[index]['product']
-    main_page['audience'] = {}
-    main_page['audience']['en-US'] = page_metadata[index]['audience']
-    main_page['gradeRange'] = {}
-    main_page['gradeRange']['en-US'] = page_metadata[index]['gradeRange']
+    findPdfs('cmt-two-third-pane', main_page['pdf_array'])
 
 
-    main_page_pdfs = []
-    findPdfs('mainbox', main_page_pdfs)
-    time.sleep(1)
-    for pdf_idx, pdf in enumerate(main_page_pdfs):
-        asset = client.assets(space_id, environment_id).find(pdf['id'])
-
-    links = driver.find_elements_by_xpath('//div[contains(@class, "mainbox")]//li//a')
+    # navigate to sub-pages
+    links = driver.find_elements_by_xpath('//div[contains(@class, "cmt-two-third-pane")]//li//a')
     length = len(links)
     counter = 0
-    entry_ids = []
-    # navigate to sub-pages
+    new_page_entry_ids = []
     while counter < length:
-        new_page = {}
-        new_id = ''
-        WebDriverWait(driver, 15).until(lambda driver: driver.find_elements_by_xpath('//div[contains(@class, "mainbox")]//li//a'))
-        links = driver.find_elements_by_xpath('//div[contains(@class, "mainbox")]//li//a')
+        # wait until main_page has loaded
+        WebDriverWait(driver, 15).until(lambda driver: driver.find_elements_by_xpath('//div[contains(@class, "cmt-two-third-pane")]//li//a'))
+        links = driver.find_elements_by_xpath('//div[contains(@class, "cmt-two-third-pane")]//li//a')
         links[counter].click()
 
+        # wait until new_page has loaded
         WebDriverWait(driver, 15).until(lambda driver: driver.find_elements_by_xpath('//h1'))
         newSoup = BeautifulSoup(driver.page_source.encode('utf-8'), 'html.parser')
-        new_page_title = newSoup.find('h1').text.strip()
-        new_page['title'] = {}
-        new_page['title']['en-US'] = new_page_title
-        new_content = newSoup.find('div', attrs={'class': 'LeftTwoThirdsPane'})
-        new_content = tomd.convert(str(new_content)).strip()
-        new_page['pageContentMarkdown'] = {}
-        new_page['pageContentMarkdown']['en-US'] = new_content
+        title = newSoup.find('h1').text.strip()
+        new_content = tomd.convert(str(newSoup.find('div', attrs={'class': 'cmt-two-third-pane'}))).strip()
+        index = pairMetadata(title, 'title', 'page')
+        page_metadata = excel_metadata['page'][index]
+        new_page = {
+            'fields': {
+                'title': { 'en-US': title },
+                'pageContentMarkdown': { 'en-US': new_content },
+                'product': { 'en-US': page_metadata['product'] },
+                'audience': { 'en-US': page_metadata['audience'] },
+                'gradeRange': { 'en-US': page_metadata['gradeRange'] },
+                'pdf': { 'en-US': [] }
+            },
+            'id': binascii.b2a_hex(os.urandom(11)),
+            'content_type': 'sitePage',
+            'pdf_array': []
+        }
+        findPdfs('cmt-two-third-pane', new_page['pdf_array'])
+        for new_page_pdf_idx, new_page_pdf in enumerate(new_page['pdf_array']):
+            new_page['fields']['pdf']['en-US'].append({'sys' : {"type": "Link", "linkType": "Entry", "id": new_page_pdf['id']}})
 
-        index = pairMetadata(new_page['title']['en-US'])
-        new_page['product'] = {}
-        new_page['product']['en-US'] = page_metadata[index]['product']
-        new_page['audience'] = {}
-        new_page['audience']['en-US'] = page_metadata[index]['audience']
-        new_page['gradeRange'] = {}
-        new_page['gradeRange']['en-US'] = page_metadata[index]['gradeRange']
-
-
-        new_page_pdfs = []
-        findPdfs('LeftTwoThirdsPane', new_page_pdfs)
-
-        new_id = binascii.b2a_hex(os.urandom(11))
-        print('new_page: ', new_page)
-        publishContent(new_page, new_id)
-        entry_ids.append(new_id)
-
+        new_page_entry_ids.append(new_page['id'])
+        createEntry(new_page)
 
         driver.execute_script('window.history.go(-1)')
         counter += 1
 
-    main_page['internalLinks'] = {}
-    main_page['internalLinks']['en-US'] = []
-    for id_idx, id in enumerate(entry_ids):
-        main_page['internalLinks']['en-US'].append({'sys' : {"type": "Link", "linkType": "Entry", "id": id}})
-    publishContent(main_page, binascii.b2a_hex(os.urandom(11)))
+    for id_idx, id in enumerate(new_page_entry_ids):
+        main_page['fields']['internalLinks']['en-US'].append({'sys' : {"type": "Link", "linkType": "Entry", "id": id}})
+    # end navigate to sub-pages
+
+
+    for main_page_pdf_idx, main_page_pdf in enumerate(main_page['pdf_array']):
+        main_page['fields']['pdf']['en-US'].append({'sys' : {"type": "Link", "linkType": "Entry", "id": main_page_pdf['id']}})
+    createEntry(main_page)
+    # for media_idx, media in enumerate(all_media):
+        # publishAsset(media)
+
+
 
 site_login()
 driver.get(URL)
 scrape_content()
-
-
-
-
-
-
-    # curl --include \
-    #      --request GET \
-    #      https://cdn.contentful.com/spaces/wjuty07n9kzp/environments/master/entry/5nuNxy1PluCvgensQ7uNTD?&access_token=de842675273a862fc0578632df2c95cf97ea6590de1820075c0abf2853e5ac22
-# curl --include \
-#      --request GET \
-#      https://api.contentful.com/spaces/wjuty07n9kzp/environments/master/assets?access_token=CFPAT-b9d0bb66831b4cee396847c0467eace39cd05611526064d7079b3e57653928d6
+driver.quit()

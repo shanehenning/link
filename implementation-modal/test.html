@@ -177,7 +177,6 @@
   }
   #modal-implementation.ms p{
     font-size: 20px;
-    /* line-height: 24px; */
     margin-bottom: 0;
     color: #4A4A4A;
   }
@@ -218,7 +217,6 @@
   #modal-implementation.ms .question.validate{
     border-color: #F18679;
     border-width: 1px;
-    /* margin-top: 5px; */
     margin-bottom: 5px;
   }
   #modal-implementation.ms .validate-message, #modal-implementation.ms .validate-message-other{
@@ -260,7 +258,6 @@
     top: 0;
     margin: 0;
     margin-left: -15px;
-    /* display: block; */
     width: 50px;
     height: 42px;
     cursor: pointer;
@@ -286,8 +283,12 @@
     letter-spacing: 11px;
   }
 
+  #modal-implementation.ms .dont-ask{
+    margin-bottom: 10px;
+  }
+
   #modal-implementation.ms .dont-ask label{
-    margin: 5px 10px 5px;
+    padding: 5px 5px 5px;
     font-size: 14px;
     display: inline-block;
   }
@@ -296,8 +297,8 @@
     height: auto;
     width: auto;
     margin: 0;
-    display: block;
-    width: 100%;
+    margin-left: -10px;
+    width: 40px;
     height: 100%;
   }
   #modal-implementation.ms .dont-ask input[type=checkbox] + span:before{
@@ -318,7 +319,6 @@
 
   #modal-implementation.ms label, #modal-implementation.ms .question a{
     display: block;
-    /* font-size: 18px; */
     line-height: 26px;
     font-weight: 400;
   }
@@ -331,9 +331,7 @@
   #modal-implementation.ms .question label:hover{
     background-color: #FBFCFE;
   }
-  /* #modal-implementation.ms .collapse label:focus-within{
-    outline: -webkit-focus-ring-color auto 5px;
-  } */
+
   #modal-implementation.ms label.highlighted{
     background-color: rgba(48,140,233,0.1) !important;
     color: #308CE9;
@@ -383,8 +381,7 @@
 
   #modal-implementation.ms .button-container{
     text-align: center;
-    /* margin-top: 15px; */
-    margin-top: 45px;
+    margin-top: 30px;
     margin-bottom: 10px;
   }
 
@@ -402,6 +399,7 @@
     line-height: 22px;
     transition: 250ms ease;
     font-family: "proxima_nova_rgbold";
+    cursor: pointer;
   }
   #modal-implementation.ms .button-cancel:hover, #modal-implementation.ms .button-cancel:focus, #modal-implementation.ms .button-submit:hover, #modal-implementation.ms .button-submit:focus, #modal-implementation.ms .button-ok:hover, #modal-implementation.ms .button-ok:focus, #modal-implementation.ms .question a{
     text-decoration: none;
@@ -642,15 +640,15 @@
 
           </li>
         </ol>
+        <div class="dont-ask text-left">
+          <label for="dont-ask-me-again">
+            <input type="checkbox" name="dont-ask-me-again" value="I’d rather not answer. Don’t ask me again.">
+            <span>I’d rather not answer. Don’t ask me again.</span>
+          </label>
+        </div>
         <div class="button-container">
-          <div class="dont-ask text-left">
-            <label for="dont-ask-me-again">
-              <input type="checkbox" name="dont-ask-me-again" value="Don’t ask me again">
-              <span>I’d rather not answer, don’t ask me again</span>
-            </label>
-          </div>
-          <a class="button-cancel" href="#">Cancel</a>
-          <a class="button-submit" href="#">Submit</a>
+          <span tabindex="0" class="button-cancel">Cancel</span>
+          <span tabindex="0" class="button-submit">Submit</span>
         </div>
       </div>
     </div>
@@ -664,7 +662,7 @@
           <h2>Thank you!</h2>
           <p>Your feedback is important and helps ensures that Second Step users get the support they need.</p>
         </div>
-        <a class="button-ok text-center" href="#">Close</a>
+        <span tabindex="0" class="button-ok text-center">Close</span>
       </div>
     </div>
 
@@ -677,7 +675,7 @@
           <figure class="completed fa fa-check-circle"></figure>
           <p>Okay! We won’t ask you again.</p>
         </div>
-        <a class="button-ok text-center" href="#">Close</a>
+        <span tabindex="0" class="button-ok text-center">Close</span>
       </div>
     </div>
   </div>
@@ -789,19 +787,20 @@
       if (firstTimeUserExperience[page] == true) {
         seenFtue = true;
       }
-      // if (checkDate() == true){
+      if (checkDate() == true){
         getSegmentationData();
-      // }
+      }
     }
+
 
     function getSegmentationData() {
       $.ajax({
         type: 'GET',
-        url: '/DesktopModules/UserStore/API/Personalization/Get?key=testSegmentationData',
+        url: '/DesktopModules/UserStore/API/Personalization/Get?key=segmentationData',
         cache: false
       }).fail(function(x) {
-        setPersonalizationData('testSegmentationData', {
-          'completed-survey': true
+        setPersonalizationData('segmentationData', {
+          'completed-survey': false
         })
         getSegmentationData();
         console.error(x);
@@ -930,7 +929,6 @@
         }
       });
 
-      // if (noValidations == true) submit();
       if($('#modal-implementation .dont-ask input').is(':checked')) dontAsk = true;
       if(noValidations == true || dontAsk == true) submit();
 
@@ -960,18 +958,19 @@
       $('#modal-implementation .modal-form').toggleClass('hidden');
       dontAsk == true ? $('#modal-implementation .modal-dont-ask').toggleClass('hidden') : $('#modal-implementation .modal-thank-you').toggleClass('hidden')
       sendData();
-      setPersonalizationData('testSegmentationData', {
+      setPersonalizationData('segmentationData', {
         'completed-survey': true
       })
     }
 
 function checkDate(){
   var now = new Date();
-  var startDate = new Date(2019, 6, 1)
-  if (now < startDate){
-    return false;
-  } else{
+  var startDate = new Date(2019, 0, 28)
+  var endDate = new Date(2019, 1, 11)
+  if (now > startDate && now < endDate){
     return true;
+  } else{
+    return false;
   }
 }
 
@@ -983,7 +982,7 @@ function checkDate(){
     //   })
     // })
 
-    $('#modal-implementation .question input[type="checkbox"]').on('focus', function() {
+    $('#modal-implementation .question input[type="checkbox"], #modal-implementation .dont-ask input[type="checkbox"]').on('focus', function() {
       $(this).parent().css({
         'background-color': 'rgba(155, 155, 155, 0.1)'
       });
