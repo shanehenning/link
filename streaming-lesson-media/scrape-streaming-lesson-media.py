@@ -126,10 +126,12 @@ def openModals(bs, page):
                     if len(element.get_attribute('style').split('media/')) > 1:
                         media_id = element.get_attribute('style').split('media/')[1].split('/')[0]
                         media_poster = element.get_attribute('style').split('url("')[1].split('");')[0]
+                        poster_type = 'image/' + media_poster.split('.')[-1]
                         media = {
                             'type': 'video',
-                            'media-id': media_id,
-                            'media-poster': media_poster
+                            'limelight-id': media_id,
+                            'limelight-poster': media_poster,
+                            'poster-type': poster_type
                         }
                     else:
                         media = ' '
@@ -148,10 +150,10 @@ def openModals(bs, page):
             # wait for modal to close before next index
             time.sleep(.55)
 
-    data = {}
+    data = []
     counter = 0
     for materials_idx, materials in enumerate(lesson_materials_all):
-        data[materials['language']] = {}
+        # data[materials['language']] = {}
         items = {}
         items['categories'] = [{}] * len(materials['content'])
         # items['categories'] = {}
@@ -173,7 +175,7 @@ def openModals(bs, page):
                     button_title = button_title.text.strip()
                     thumbnail_img = button.find('img')['src']
                     thumbnail_alt = button.find('img')['alt']
-                    thumbnail_type = 'image/' + thumbnail_img.split('/')[-1]
+                    thumbnail_type = 'image/' + thumbnail_img.split('.')[-1]
                 else:
                     button_title = button['title']
                     thumbnail_img = ' '
@@ -189,7 +191,8 @@ def openModals(bs, page):
                 new_material.append(new_button)
                 counter += 1
             items['categories'][item_idx] = { 'category-title': heading, 'media-resource': new_material }
-        data[materials['language']] = items
+        # data[materials['language']] = items
+        data.append({'language': materials['language'], 'items': items})
     pages.append({'page': page, 'content': data})
 
     # [materials['language']]
@@ -213,8 +216,8 @@ def navigate(max_page_number, address):
 
 
 site_login()
-grade_count = 3
-while grade_count < 4:
+grade_count = 4
+while grade_count < 5:
     if grade_count == 1:
         URL = BASE_URL + 'Early-Learning/Weekly-Theme-'
         page_count_max = 7
